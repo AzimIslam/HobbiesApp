@@ -1,0 +1,28 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+<div id="app">
+    <div class="container">
+        <div class="card shadow mx-auto text-left m-3 p-4" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
+            <h5 class="card-title pt-2 pb-4">Log in</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password">
+                </div>
+                <button type="submit" class="btn btn-primary">Log in</button>
+            </form>
+        </div>
+        <div class="card shadow mx-auto text-center m-4 p-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
+            <p class="card-text">Join Hobbies App today.</p>
+            <a href="{% url 'register' %}">
+                <button class="btn btn-secondary">Create an Account</button>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
