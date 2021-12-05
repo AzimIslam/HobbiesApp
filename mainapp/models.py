@@ -15,6 +15,11 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True)
     hobbies = models.ManyToManyField('Hobby')
     email = models.EmailField()
+    friends = models.ManyToManyField(
+        to='self',
+        blank=True,
+        related_name='friends'
+    )
 
 
 class Country(models.Model):
