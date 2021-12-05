@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib import auth
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from mainapp.models import *
@@ -15,19 +15,20 @@ def login_view(request):
     '''
 
     if request.method == "POST":
-        print(request.POST)
         username = request.POST.get("username")
         password = request.POST.get("password")
-        print(username, password)
-        user = authenticate(request, username=username, password=password)
+        user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             # Change to homepage
-            login(request, user)
-            print("Successful login")
-            return redirect("/home")
+            auth.login(request, user)
+            return render(request, "mainapp/profile/homepage.html", {
+                'username': username    
+            })
         else:
-            print("Unsuccessful")
-            return JsonResponse({"success": False})
+            return render(request, 'mainapp/login.html', {
+                'title': 'Login Page',
+                'fail': True
+            })
     else:
         return render(request, 'mainapp/login.html', {
             'title': 'Login Page'
@@ -45,8 +46,8 @@ def register_view(request):
             user = User(email=email, username=username, first_name=first_name, last_name=surname, password=password, date_of_birth=dateofbirth)
             user.save()
 
-            createdUser = authenticate(request, username=username, password=request.POST.get("password"))
-            login(request, createdUser)
+            createdUser = auth.authenticate(request, username=username, password=request.POST.get("password"))
+            auth.login(request, createdUser)
 
             return redirect("/home")
         else:
@@ -57,3 +58,8 @@ def register_view(request):
 @login_required
 def home_view(request):
     return render(request, 'mainapp/profile/homepage.html')
+
+@login_required
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
