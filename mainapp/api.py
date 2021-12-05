@@ -11,7 +11,6 @@ from .models import *
 def hobbie_api(request):
     if request.method == "POST":
         try:
-            print("POOOOOOO")
             body_unicode = request.body.decode('utf8')
             body = json.loads(body_unicode)
             newHobbie = Hobby(
@@ -19,7 +18,6 @@ def hobbie_api(request):
                 description = body["hobbieDescription"],
             )
             newHobbie.save()
-            print("SUCESSSS")
             return JsonResponse({})
         except:
             return HttpResponseNotFound("New Hobbie Not created")
