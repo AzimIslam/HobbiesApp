@@ -18,7 +18,7 @@ class User(AbstractUser):
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, unique=True)
     code = models.CharField(max_length=2, unique=True)
 
 class City(models.Model):
@@ -29,5 +29,5 @@ class City(models.Model):
     )
 
 class Hobby(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, unique=True)
     description = models.CharField(max_length=255)
