@@ -49,7 +49,9 @@ def register_view(request):
             createdUser = auth.authenticate(request, username=username, password=request.POST.get("password"))
             auth.login(request, createdUser)
 
-            return redirect("/home")
+            return render(request, "mainapp/profile/homepage.html", {
+                'username': username    
+            })
         else:
             return render(request, 'mainapp/signup.html', {
                 'title': 'Create an account'
