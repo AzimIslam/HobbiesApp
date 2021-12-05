@@ -20,8 +20,7 @@ urlpatterns = [
     # Root URL
     #path('', views.index, name='Movies and Actors'),
 
-    path('login/', views.login_view, name="login"),
+    path('', views.login_view, name="login"),
     path('register/', views.register_view, name="register"),
-
-    path('api/register', api.register_api, name="register api")
+    path('home/', views.home_view, name="home"),
 ]
