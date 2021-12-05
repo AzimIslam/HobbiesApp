@@ -1,10 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User, Hobby, Country, City
+from .models import User, Hobby, City
 
 # Register your models here.
 
-admin.site.register(User, UserAdmin)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ["username", "email", "first_name", "last_name", "date_of_birth"]
+
 admin.site.register(Hobby)
-admin.site.register(Country)
 admin.site.register(City)

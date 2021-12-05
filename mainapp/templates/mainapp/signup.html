@@ -1,32 +1,37 @@
 {% extends 'mainapp/base.html' %}
 
 {% block content %}
-<div class="app">
+<div id="app">
     <div class="container">
         <div class="card shadow mx-auto text-left m-3 p-4" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
             <h5 class="card-title pt-2 pb-4">Create an account</h5>
-            <form>
+            <form method="POST">
+                {% csrf_token %}
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" required>
                 </div>
                 <div class="mb-3">
                     <label for="fName" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="fName">
+                    <input type="text" class="form-control" id="fName" required>
                 </div>
                 <div class="mb-3">
                     <label for="sName" class="form-label">Surname</label>
-                    <input type="email" class="form-control" id="surname">
+                    <input type="text" class="form-control" id="surname" required> 
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password">
+                    <input type="password" class="form-control" id="password" required>
                 </div>
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirmPassword">
+                    <label for="birthday" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="birthday" name="birthday" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign up</button>
+                <button type="button" @click="register()" class="btn btn-primary">Sign up</button>
             </form>
         </div>
         <div class="card shadow mx-auto text-center m-4 p-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
@@ -37,4 +42,39 @@
         </div>
     </div>  
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let app = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        methods: {
+            async register() {
+                console.log("XXX")
+                let data = {
+                    email: document.getElementById("email").value,
+                    username: document.getElementById("username").value,
+                    first_name: document.getElementById("fName").value,
+                    surname: document.getElementById("surname").value,
+                    password: document.getElementById("password").value,
+                    dob: document.getElementById("birthday").value
+                }
+                let registerResponse = await fetch("{% url 'register api' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify(data)
+                })
+
+                if (registerResponse.ok) {
+                    console.log("User success")
+                } else {
+                    alert("API call failed")
+                }
+            }
+        }
+    })
+    app.mount('#app')
+</script>
 {% endblock %}

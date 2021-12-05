@@ -5,15 +5,19 @@ from django.urls import reverse
 # Create your models here.
 
 class User(AbstractUser):
-    profile_pic = models.ImageField()
+    profile_pic = models.ImageField(blank=True)
     city = models.ForeignKey(
         'City',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         related_name="users",
     )
     date_of_birth = models.DateField(null=True)
-    hobbies = models.ManyToManyField('Hobby')
+    hobbies = models.ManyToManyField(
+        'Hobby',
+        blank=True
+    )
     email = models.EmailField()
     friends = models.ManyToManyField(
         to='self',
@@ -21,17 +25,12 @@ class User(AbstractUser):
         related_name='friends'
     )
 
+    def __str__(self):
+        return self.username
 
-class Country(models.Model):
-    name = models.CharField(max_length=150, unique=True)
-    code = models.CharField(max_length=2, unique=True)
 
 class City(models.Model):
     name = models.CharField(max_length=150)
-    country = models.ForeignKey(
-        Country,
-        on_delete=models.CASCADE,
-    )
 
 class Hobby(models.Model):
     name = models.CharField(max_length=150, unique=True)
