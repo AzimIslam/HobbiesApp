@@ -1,6 +1,10 @@
+{% extends 'mainapp/profile/base.html' %}
+
+{% block content %}
 {% if user.is_authenticated %}
-    <h1>Hello {{ username }}</h1>
+    <h1>Hello {{ user }}</h1>
     <a href="{% url 'logout' %}">Log out</a>
 {% else %}
     <h1>You are not logged in</h1>
 {% endif %}
+{% endblock %}

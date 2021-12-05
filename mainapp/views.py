@@ -21,9 +21,7 @@ def login_view(request):
         if user is not None:
             # Change to homepage
             auth.login(request, user)
-            return render(request, "mainapp/profile/homepage.html", {
-                'username': username    
-            })
+            return render(request, "mainapp/profile/homepage.html")
         else:
             return render(request, 'mainapp/login.html', {
                 'title': 'Login Page',
@@ -49,9 +47,7 @@ def register_view(request):
             createdUser = auth.authenticate(request, username=username, password=request.POST.get("password"))
             auth.login(request, createdUser)
 
-            return render(request, "mainapp/profile/homepage.html", {
-                'username': username    
-            })
+            return render(request, "mainapp/profile/homepage.html")
         else:
             return render(request, 'mainapp/signup.html', {
                 'title': 'Create an account'
