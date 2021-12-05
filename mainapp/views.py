@@ -53,6 +53,11 @@ def register_view(request):
                 'title': 'Create an account'
             })
 
+
+@login_required
+def create_hobbies_view(request):
+    return render(request, 'mainapp/profile/createhobbies.html')
+
 @login_required
 def home_view(request):
     return render(request, 'mainapp/profile/homepage.html')

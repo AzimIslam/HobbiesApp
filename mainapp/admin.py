@@ -7,5 +7,9 @@ from .models import User, Hobby, City
 class UserAdmin(admin.ModelAdmin):
     list_display = ["username", "email", "first_name", "last_name", "date_of_birth"]
 
-admin.site.register(Hobby)
+@admin.register(Hobby)
+class HobbyAdmin(admin.ModelAdmin):
+    list_display = ["name", "description"]
+
+
 admin.site.register(City)
