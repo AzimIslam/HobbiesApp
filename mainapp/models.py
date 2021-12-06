@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.fields import NullBooleanField
 from django.urls import reverse
 
 # Create your models here.
 
 class User(AbstractUser):
-    profile_pic = models.ImageField(blank=True)
+    profile_pic = models.ImageField(blank=True, null=True)
     city = models.CharField(blank=True, max_length=150, null=True)
     date_of_birth = models.DateField(null=True)
     hobbies = models.ManyToManyField(

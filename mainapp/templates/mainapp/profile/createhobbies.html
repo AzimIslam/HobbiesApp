@@ -46,7 +46,7 @@
                 body: JSON.stringify(data)
               });
           if (response.ok) {
-            alert("Created Hobbie");
+            swal("Success", "Hobbie Created", "ok");
           } else {
             alert("Error: Hobbie Not Added")
           }

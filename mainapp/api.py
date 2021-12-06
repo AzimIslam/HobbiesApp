@@ -1,5 +1,6 @@
 
 import json
+from django.core.exceptions import BadRequest
 
 from django.http import JsonResponse
 from django.http.response import HttpResponseBadRequest, HttpResponseNotFound
@@ -10,8 +11,25 @@ from .models import *
 
 @login_required
 def profile_api(request):
-    print(request.user)
     user = get_object_or_404(User, username=request.user)
+    if request.method == "PUT":
+        body_unicode = request.body.decode('utf8')
+        body = json.loads(body_unicode)
+        
+        name = body["name"].split(" ")
+        dob = body["dob"]
+        city = body["city"]
+        print(name)
+
+        if len(name) != 2:
+            return HttpResponseBadRequest({'error': 'Please enter a your first name and surname seperated by spaces'})
+
+        user.first_name = name[0]
+        user.last_name = name[1]
+        user.date_of_birth = dob
+        user.city = city
+
+        user.save()
     return JsonResponse({'user': user.to_dict()})
 
 @login_required

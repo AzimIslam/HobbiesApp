@@ -28,7 +28,7 @@ urlpatterns = [
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
 
     path('api/createHobby/', api.hobbie_api, name="hobbie api"),
-    path('api/profile/', api.profile_api, name="get profile api")
+    path('api/profile/', api.profile_api, name="profile api")
 ]
 
 urlpatterns += staticfiles_urlpatterns()

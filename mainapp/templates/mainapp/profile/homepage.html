@@ -4,33 +4,42 @@
 
 {% load static %}
 <div id="app">
+    {% csrf_token %}
     <div class="container">
         <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
-            <img src="{% static 'default.png' %}" class="img-thumbnail mb-3">
+            <img v-if="editMode==false" src="{% static 'images/default.png' %}" class="img-thumbnail mb-3">
             <ul class="list-group">
+                <li v-if="editMode==true" class="list-group-item">
+                    <div  class="input-group mb-3">
+                        <div class="custom-file">
+                        <label class="custom-file-label" for="inputGroupFile01">Choose Profile Pic</label>
+                        <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/gif, image/jpeg, image/png">
+                        </div>
+                    </div>
+                </li>
                 <li class="list-group-item">
                     <strong>Full Name: </strong>
                     <p v-if="editMode==false" style="display: inline">[[ first_name ]] [[ surname ]]</p>
-                    <input v-if="editMode==true" type="text" class="form-control" :value="first_name  + ' ' +surname" required>
+                    <input v-if="editMode==true" id="name" type="text" class="form-control" :value="first_name  + ' ' +surname" required>
                 </li>
                 <li class="list-group-item">
                     <strong>Date of Birth: </strong>
                     <p v-if="editMode==false" style="display: inline">[[ dob ]]</p>
-                    <input v-if="editMode==true" type="date" name="dob" class="form-control" id="birthday" name="birthday" :value="dob" required>
+                    <input v-if="editMode==true" id="date" type="date" name="dob" class="form-control" id="birthday" name="birthday" :value="dob" required>
                 </li>
                 <li class="list-group-item">
                     <strong>City: </strong>
-                    <p v-if="city != null && editMode==false" style="display: inline">
+                    <p v-if="city.length > 0 && editMode==false" style="display: inline">
                         [[ city ]]
                     </p>
-                    <p v-if="editMode==false" style="display: inline">
+                    <p v-if="city.length == 0 && editMode==false" style="display: inline">
                         Not Specified
                     </p>
-                    <input v-if="editMode==true" type="text" class="form-control" :value="city">
+                    <input id ="city" v-if="editMode==true" type="text" class="form-control" :value="city">
                 </li>
               </ul>
               <button type="button" v-if="editMode == false" @click="editMode = true"class="btn btn-primary mt-3">Edit Profile</button>
-              <button type="button" v-if="editMode == true" @click="editMode = false"class="btn btn-success mt-3">Save Changes</button>
+              <button type="button" v-if="editMode == true" @click="editProfile()"class="btn btn-success mt-3">Save Changes</button>
         </div>
     </div>
 </div>
@@ -45,20 +54,48 @@
                 first_name: null,
                 surname: null,
                 dob: null,
-                city: null,
+                city: "",
                 hobbies: [],
                 editMode: false
             }
         },
         async created() {
-            let profileResponse = await fetch("{% url 'get profile api' %}");
+            let profileResponse = await fetch("{% url 'profile api' %}");
             if (profileResponse.ok) {
                 let profileData = await profileResponse.json()
                 this.first_name = profileData.user.first_name
                 this.surname = profileData.user.surname
                 this.dob = profileData.user.dob
+                this.city = profileData.user.city
             } else {
                 alert("It didn't work")
+            }
+        },
+        methods: {
+            async editProfile() {
+                data = {
+                    name: document.getElementById("name").value,
+                    city: document.getElementById("city").value,
+                    dob: document.getElementById("date").value
+                }
+                let profileResponse = await fetch("{% url 'profile api' %}", {
+                    method: "PUT",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (profileResponse.ok) {
+                    profileData = await profileResponse.json()
+                    this.first_name = profileData.user.first_name
+                    this.surname = profileData.user.surname
+                    this.dob = profileData.user.dob
+                    this.city = profileData.user.city
+                    this.editMode = false
+                } else {
+                    swal("Error", "Please enter a first name and surname", "success")
+                }
             }
         }
     })
