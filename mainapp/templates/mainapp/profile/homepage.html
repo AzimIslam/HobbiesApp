@@ -1,5 +1,67 @@
 {% extends 'mainapp/profile/base.html' %}
 
 {% block content %}
-    <h1>Hello {{ user }}</h1>
+
+{% load static %}
+<div id="app">
+    <div class="container">
+        <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
+            <img src="{% static 'default.png' %}" class="img-thumbnail mb-3">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>Full Name: </strong>
+                    <p v-if="editMode==false" style="display: inline">[[ first_name ]] [[ surname ]]</p>
+                    <input v-if="editMode==true" type="text" class="form-control" :value="first_name  + ' ' +surname" required>
+                </li>
+                <li class="list-group-item">
+                    <strong>Date of Birth: </strong>
+                    <p v-if="editMode==false" style="display: inline">[[ dob ]]</p>
+                    <input v-if="editMode==true" type="date" name="dob" class="form-control" id="birthday" name="birthday" :value="dob" required>
+                </li>
+                <li class="list-group-item">
+                    <strong>City: </strong>
+                    <p v-if="city != null && editMode==false" style="display: inline">
+                        [[ city ]]
+                    </p>
+                    <p v-if="editMode==false" style="display: inline">
+                        Not Specified
+                    </p>
+                    <input v-if="editMode==true" type="text" class="form-control" :value="city">
+                </li>
+              </ul>
+              <button type="button" v-if="editMode == false" @click="editMode = true"class="btn btn-primary mt-3">Edit Profile</button>
+              <button type="button" v-if="editMode == true" @click="editMode = false"class="btn btn-success mt-3">Save Changes</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let app = Vue.createApp({
+        delimiters: ["[[", "]]"], 
+        data() {
+            return {
+                first_name: null,
+                surname: null,
+                dob: null,
+                city: null,
+                hobbies: [],
+                editMode: false
+            }
+        },
+        async created() {
+            let profileResponse = await fetch("{% url 'get profile api' %}");
+            if (profileResponse.ok) {
+                let profileData = await profileResponse.json()
+                this.first_name = profileData.user.first_name
+                this.surname = profileData.user.surname
+                this.dob = profileData.user.dob
+            } else {
+                alert("It didn't work")
+            }
+        }
+    })
+    app.mount('#app')
+</script>
 {% endblock %}

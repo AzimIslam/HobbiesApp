@@ -4,8 +4,15 @@ import json
 from django.http import JsonResponse
 from django.http.response import HttpResponseBadRequest, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 from .models import *
+
+@login_required
+def profile_api(request):
+    print(request.user)
+    user = get_object_or_404(User, username=request.user)
+    return JsonResponse({'user': user.to_dict()})
 
 @login_required
 def hobbie_api(request):

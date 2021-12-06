@@ -6,13 +6,7 @@ from django.urls import reverse
 
 class User(AbstractUser):
     profile_pic = models.ImageField(blank=True)
-    city = models.ForeignKey(
-        'City',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name="users",
-    )
+    city = models.CharField(blank=True, max_length=150, null=True)
     date_of_birth = models.DateField(null=True)
     hobbies = models.ManyToManyField(
         'Hobby',
@@ -36,6 +30,7 @@ class User(AbstractUser):
             'first_name': self.first_name,
             'surname': self.last_name,
             'dob': self.date_of_birth,
+            'city': self.city
         }
 
     def __str__(self):
@@ -46,11 +41,6 @@ class User(AbstractUser):
             hobby.to_dict()
             for hobby in self.hobbies.all()
         ]
-
-
-
-class City(models.Model):
-    name = models.CharField(max_length=150)
 
 class Hobby(models.Model):
     name = models.CharField(max_length=150, unique=True)
