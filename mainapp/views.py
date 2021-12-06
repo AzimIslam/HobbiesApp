@@ -59,6 +59,10 @@ def create_hobbies_view(request):
     return render(request, 'mainapp/profile/createhobbies.html')
 
 @login_required
+def search_hobbies_view(request):
+    return render(request, 'mainapp/profile/searchhobbies.html')
+
+@login_required
 def home_view(request):
     return render(request, 'mainapp/profile/homepage.html')
 

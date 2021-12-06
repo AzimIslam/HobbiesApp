@@ -25,6 +25,7 @@ urlpatterns = [
     path('home/', views.home_view, name="home"),
     path('logout/', views.logout, name="logout"),
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
+    path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
 
     path('api/createHobby/', api.hobbie_api, name="hobbie api")
 ]
