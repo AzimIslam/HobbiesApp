@@ -14,6 +14,9 @@ def login_view(request):
     This view renders the login page
     '''
 
+    if request.user.is_authenticated:
+        return render(request, "mainapp/profile/homepage.html")
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")

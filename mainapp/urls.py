@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 from . import views, api
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     # Root URL
@@ -27,5 +28,8 @@ urlpatterns = [
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
     path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
 
-    path('api/createHobby/', api.hobbie_api, name="hobbie api")
+    path('api/createHobby/', api.hobbie_api, name="hobbie api"),
+    path('api/profile/', api.profile_api, name="profile api")
 ]
+
+urlpatterns += staticfiles_urlpatterns()
