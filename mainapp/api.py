@@ -46,3 +46,7 @@ def hobbie_api(request):
             return JsonResponse({})
         except:
             return HttpResponseNotFound("New Hobbie Not created")
+
+@login_required
+def hobby_api(request, hobby_name):
+    return JsonResponse({})

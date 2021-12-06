@@ -53,5 +53,6 @@ class Hobby(models.Model):
     def to_dict(self):
         return  {
             'name': self.name,
-            'description': self.description
+            'description': self.description,
+            'api': reverse('hobby api', kwargs={'hobby_name': self.name}),
         }
