@@ -4,39 +4,63 @@
   <div id=app>
     <h1> {{ hobby.name }} {{ user }}</h1>
 
+    <div class="full-screen d-flex align-items-center justify-content-center align-content-center text-center flex-column">
+      <div class="container">
+          <div class="card shadow mx-auto text-left m-3 p-4" style="width: 50rem; height: 30rem; background-color: rgba(242, 240, 240, 0.8)">
+              <h5 class="card-title pt-2 pb-4">Create A New Hobbie</h5>
+              <div class="imageDisplayWrapper" style="margin-top: 25px;">
+                <img
+                  class="imageToDisplay"
+                  style="width: 550px; height: 350px; border: 1px solid black;"
+                />
+              </div>
+          </div>
+      </div>
+    </div>
+
   </div>
 
 {% endblock %}
 
 
 {% block scripts %}
+
   <script>
+
     let myApp = Vue.createApp({
+
         delimiters: ["[[", "]]"],
         data() {
           return {
             exisitng_hobby: false,
             hobbies: [],
-            hobby_name: '{{ hobby.name }}'
+            hobby_name: '{{ hobby.name }}',
           }
         },
+
         async created() {
           let hobbyResponse = await fetch("{% url 'user hobbies api' %}");
             if (hobbyResponse.ok) {
                 let hobbyData = await hobbyResponse.json()
-                console.log(hobbyData)
                 this.hobbies = hobbyData.dict;
-                console.log(this.hobbies)
             } else {
                 alert("Failed to load hobbies");
             }
             for (let i = 0; i < this.hobbies.length; i++) {
-              console.log(this.hobby_name)
               if (this.hobby_name == this.hobbies[i].name) {
                 this.exisitng_hobby = true
               }
             }
             console.log(this.exisitng_hobby)
+
+            const requestURL = "https://api.unsplash.com/photos/random?query={{ hobby.name }}&page=1&sort=relevant&client_id=znjnWW_CVqW7Pkc-37LKwohQoMqMevECfbm6Y1GFpqI"
+            let response = await fetch(requestURL)
+            resposneData = await response.json()
+            console.log(resposneData)
+            randomImage = resposneData.urls.regular
+            const imageToDisplay = document.querySelector('.imageToDisplay')
+            imageToDisplay.src = randomImage;
+
         },
         methods: {
         }
