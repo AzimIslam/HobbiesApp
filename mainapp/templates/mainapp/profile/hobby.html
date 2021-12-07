@@ -2,6 +2,7 @@
 
 {% block content %}
   <div id=app>
+    {% csrf_token %}
     <h1> {{ hobby.name }} {{ user }}</h1>
 
     <div class="full-screen d-flex align-items-center justify-content-center align-content-center text-center flex-column">
@@ -35,11 +36,9 @@
                   </div>
                 </div>
               </div>
-              <div id="addHobbyDiv" style="margin-top: 1em; margin-left: 50em; display: block">
-                <button type="button" class="btn btn-success" name="button">Add Hobbie</button>
-              </div>
-              <div id="removeHobbyDiv" class="addHobby" style="margin-top: 1em; margin-left: 50em; display: block">
-                <button type="button" class="btn btn-danger" name="button">Remove Hobbie</button>
+              <div style="margin-top: 1em; margin-left: 50em;">
+                <button type="button" @click="addHobby()"class="btn btn-success" name="button" v-if="exisitng_hobby==false">Add Hobbie</button>
+                <button type="button" @click="removeHobby()" class="btn btn-danger" name="button" v-if="exisitng_hobby==true">Remove Hobbie</button>
               </div>
 
           </div>
@@ -77,10 +76,7 @@
             for (let i = 0; i < this.hobbies.length; i++) {
               if (this.hobby_name == this.hobbies[i].name) {
                 this.exisitng_hobby = true
-                document.getElementById('addHobbyDiv').style.display = 'none';
                 break
-              } else {
-                document.getElementById('removeHobbyDiv').style.display = 'none';
               }
             }
 
@@ -92,10 +88,32 @@
             const imageToDisplay = document.querySelector('.imageToDisplay')
             imageToDisplay.src = randomImage;
 
-
-
         },
         methods: {
+          async addHobby() {
+              let hobby_name = '{{ hobby.name }}'
+              let response = await fetch("{% url 'add hobby api' %}", {
+                method: "PUT",
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                },
+                body: JSON.stringify(hobby_name)
+              });
+              if (response.ok) {
+                this.exisitng_hobby = false
+              }
+          },
+
+          async removeHobby() {
+              let hobby_name = '{{ hobby.name }}'
+              let response = await fetch("{% url 'remove hobby api' %}", {
+                method: "PUT",
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                },
+                body: JSON.stringify(hobby_name)
+              });
+          }
         }
       })
     myApp.mount('#app')
