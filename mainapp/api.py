@@ -53,9 +53,9 @@ def hobbie_api(request):
 def hobby_api(request, hobby_name):
     try:
         hobby = Hobby.objects.get(name=hobby_name)
+        json_obj = hobby.to_dict()
         return render(request, 'mainapp/profile/hobby.html', {
-            'title': f"{hobby}",
-            'hobby': hobby,
+            'hobby': json_obj
         })
     except Hobby.DoesNotExist:
         return HttpResponse(f"Invalid Hobby: {hobby_name}")
@@ -68,3 +68,8 @@ def hobbies_api(request):
         for hobby in Hobby.objects.all()
         ]
     })
+
+@login_required
+def user_hobbies_api(request):
+    user = get_object_or_404(User, username=request.user)
+    return JsonResponse({"dict": user.get_hobbies()})

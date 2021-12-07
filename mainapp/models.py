@@ -43,13 +43,14 @@ class User(AbstractUser):
             for hobby in self.hobbies.all()
         ]
 
+
 class Hobby(models.Model):
     name = models.CharField(max_length=150, unique=True)
     description = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
-    
+
     def to_dict(self):
         return  {
             'name': self.name,

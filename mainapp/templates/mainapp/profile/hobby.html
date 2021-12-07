@@ -1,6 +1,46 @@
 {% extends 'mainapp/profile/base.html' %}
 
 {% block content %}
-  <h1> {{ hobby }} </h1>
+  <div id=app>
+    <h1> {{ hobby.name }} {{ user }}</h1>
 
+  </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+  <script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+          return {
+            exisitng_hobby: false,
+            hobbies: [],
+            hobby_name: '{{ hobby.name }}'
+          }
+        },
+        async created() {
+          let hobbyResponse = await fetch("{% url 'user hobbies api' %}");
+            if (hobbyResponse.ok) {
+                let hobbyData = await hobbyResponse.json()
+                console.log(hobbyData)
+                this.hobbies = hobbyData.dict;
+                console.log(this.hobbies)
+            } else {
+                alert("Failed to load hobbies");
+            }
+            for (let i = 0; i < this.hobbies.length; i++) {
+              console.log(this.hobby_name)
+              if (this.hobby_name == this.hobbies[i].name) {
+                this.exisitng_hobby = true
+              }
+            }
+            console.log(this.exisitng_hobby)
+        },
+        methods: {
+        }
+      })
+    myApp.mount('#app')
+  </script>
 {% endblock %}
