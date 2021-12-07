@@ -6,14 +6,42 @@
 
     <div class="full-screen d-flex align-items-center justify-content-center align-content-center text-center flex-column">
       <div class="container">
-          <div class="card shadow mx-auto text-left m-3 p-4" style="width: 50rem; height: 30rem; background-color: rgba(242, 240, 240, 0.8)">
-              <h5 class="card-title pt-2 pb-4">Create A New Hobbie</h5>
-              <div class="imageDisplayWrapper" style="margin-top: 25px;">
-                <img
-                  class="imageToDisplay"
-                  style="width: 550px; height: 350px; border: 1px solid black;"
-                />
+          <div class="card shadow mx-auto text-left m-3 p-4" style="width: 65rem; height: 30rem; background-color: rgba(242, 240, 240, 0.8)">
+              <h5 class="card-title pt-2 pb-4">{{ hobby.name }}</h5>
+              <div class = "container" style="display:flex;">
+                <div class="imageDisplayWrapper" style="display:flex; margin-right: 2rem">
+                  <img class="imageToDisplay" style="display:flex; width: 450px; height: 325px; border: 1px solid black;" src="https://in2english.net/wp-content/uploads/2018/09/Hobbies.jpg"/>
+                </div>
+                <div class="descriptionForHobby" style="width: 500px; height: 325px; border: 1px solid black; overflow:auto">
+                  <div style="margin-left: 1em; margin-top: 1em; text-align: left; overflow:auto">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                  </div>
+                </div>
               </div>
+              <div id="addHobbyDiv" style="margin-top: 1em; margin-left: 50em; display: block">
+                <button type="button" class="btn btn-success" name="button">Add Hobbie</button>
+              </div>
+              <div id="removeHobbyDiv" class="addHobby" style="margin-top: 1em; margin-left: 50em; display: block">
+                <button type="button" class="btn btn-danger" name="button">Remove Hobbie</button>
+              </div>
+
           </div>
       </div>
     </div>
@@ -49,17 +77,22 @@
             for (let i = 0; i < this.hobbies.length; i++) {
               if (this.hobby_name == this.hobbies[i].name) {
                 this.exisitng_hobby = true
+                document.getElementById('addHobbyDiv').style.display = 'none';
+                break
+              } else {
+                document.getElementById('removeHobbyDiv').style.display = 'none';
               }
             }
-            console.log(this.exisitng_hobby)
 
-            const requestURL = "https://api.unsplash.com/photos/random?query={{ hobby.name }}&page=1&sort=relevant&client_id=znjnWW_CVqW7Pkc-37LKwohQoMqMevECfbm6Y1GFpqI"
+            const requestURL = "https://api.unsplash.com/photos/random?query={{ hobby.name }}&page=1&sort=relevant&client_id=<INSERT KEY>"
             let response = await fetch(requestURL)
             resposneData = await response.json()
             console.log(resposneData)
             randomImage = resposneData.urls.regular
             const imageToDisplay = document.querySelector('.imageToDisplay')
             imageToDisplay.src = randomImage;
+
+
 
         },
         methods: {
