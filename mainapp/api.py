@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.http.response import HttpResponseBadRequest, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect, render
+
 
 from .models import *
 
@@ -15,7 +17,7 @@ def profile_api(request):
     if request.method == "PUT":
         body_unicode = request.body.decode('utf8')
         body = json.loads(body_unicode)
-        
+
         name = body["name"].split(" ")
         dob = body["dob"]
         city = body["city"]
@@ -49,4 +51,20 @@ def hobbie_api(request):
 
 @login_required
 def hobby_api(request, hobby_name):
-    return JsonResponse({})
+    try:
+        hobby = Hobby.objects.get(name=hobby_name)
+        return render(request, 'mainapp/profile/hobby.html', {
+            'title': f"{hobby}",
+            'hobby': hobby,
+        })
+    except Hobby.DoesNotExist:
+        return HttpResponse(f"Invalid Hobby: {hobby_name}")
+
+@login_required
+def hobbies_api(request):
+    return JsonResponse({
+        'hobbies': [
+        hobby.to_dict()
+        for hobby in Hobby.objects.all()
+        ]
+    })
