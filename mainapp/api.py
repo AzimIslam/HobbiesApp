@@ -76,30 +76,18 @@ def user_hobbies_api(request):
 
 
 @login_required
-def add_hobby(request):
+def toggle_hobby(request):
     if request.method == "PUT":
         try:
             user = get_object_or_404(User, username=request.user)
             body_unicode = request.body.decode('utf8')
             body = json.loads(body_unicode)
-            hobby = get_object_or_404(Hobby, name=body)
-            user.hobbies.add(hobby)
+            hobby = get_object_or_404(Hobby, name=body['hobby_name'])
+            if (body['exisitng_hobby']):
+                user.hobbies.remove(hobby)
+            else:
+                user.hobbies.add(hobby)
             user.save()
-            return JsonResponse({})
+            return JsonResponse({"added": body['exisitng_hobby']})
         except:
             return HttpResponseNotFound("Hobby Not Added")
-
-
-@login_required
-def remove_hobby(request):
-    if request.method == "PUT":
-        try:
-            user = get_object_or_404(User, username=request.user)
-            body_unicode = request.body.decode('utf8')
-            body = json.loads(body_unicode)
-            hobby = get_object_or_404(Hobby, name=body)
-            user.hobbies.remove(hobby)
-            user.save()
-            return JsonResponse({})
-        except:
-            return HttpResponseNotFound("Hobby Not Removed")

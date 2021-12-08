@@ -29,8 +29,7 @@ urlpatterns = [
     path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
 
     path('api/hobbies/', api.hobbies_api, name="hobbies api"),
-    path('api/addHobby/', api.add_hobby, name="add hobby api"),
-    path('api/removeHobby/', api.remove_hobby, name="remove hobby api"),
+    path('api/toggleHobby/', api.toggle_hobby, name="toggle hobby api"),
     path('api/userHobbies/', api.user_hobbies_api, name="user hobbies api"),
     path('api/createHobby/', api.hobbie_api, name="hobbie api"), # createHobby api
     path('api/profile/', api.profile_api, name="profile api"),

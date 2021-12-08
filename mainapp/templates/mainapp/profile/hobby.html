@@ -15,30 +15,13 @@
                 </div>
                 <div class="descriptionForHobby" style="width: 500px; height: 325px; border: 1px solid black; overflow:auto">
                   <div style="margin-left: 1em; margin-top: 1em; text-align: left; overflow:auto">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                    Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-                    Praesent mauris. Fusce nec tellus sed augue semper porta.
+                      {{ hobby.description }}
                   </div>
                 </div>
               </div>
               <div style="margin-top: 1em; margin-left: 50em;">
-                <button type="button" @click="addHobby()"class="btn btn-success" name="button" v-if="exisitng_hobby==false">Add Hobbie</button>
-                <button type="button" @click="removeHobby()" class="btn btn-danger" name="button" v-if="exisitng_hobby==true">Remove Hobbie</button>
+                <button type="button" @click="toggleHobby()"class="btn btn-success" name="button" v-if="exisitng_hobby==false">Add Hobbie</button>
+                <button type="button" @click="toggleHobby()" class="btn btn-danger" name="button" v-if="exisitng_hobby==true">Remove Hobbie</button>
               </div>
 
           </div>
@@ -90,30 +73,26 @@
 
         },
         methods: {
-          async addHobby() {
-              let hobby_name = '{{ hobby.name }}'
-              let response = await fetch("{% url 'add hobby api' %}", {
+          async toggleHobby() {
+              let data = {
+                hobby_name: '{{ hobby.name }}',
+                exisitng_hobby: this.exisitng_hobby
+              }
+              let response = await fetch("{% url 'toggle hobby api' %}", {
                 method: "PUT",
                 headers: {
                     "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
                 },
-                body: JSON.stringify(hobby_name)
+                body: JSON.stringify(data)
               });
-              if (response.ok) {
+              dataResponse = await response.json()
+              console.log(dataResponse)
+              if (dataResponse["added"]) {
                 this.exisitng_hobby = false
+              } else {
+                this.exisitng_hobby = true
               }
           },
-
-          async removeHobby() {
-              let hobby_name = '{{ hobby.name }}'
-              let response = await fetch("{% url 'remove hobby api' %}", {
-                method: "PUT",
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
-                },
-                body: JSON.stringify(hobby_name)
-              });
-          }
         }
       })
     myApp.mount('#app')
