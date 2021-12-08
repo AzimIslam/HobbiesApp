@@ -21,6 +21,7 @@ def profile_api(request):
         name = body["name"].split(" ")
         dob = body["dob"]
         city = body["city"]
+        email = body["email"]
         print(name)
 
         if len(name) != 2:
@@ -29,6 +30,7 @@ def profile_api(request):
         user.first_name = name[0]
         user.last_name = name[1]
         user.date_of_birth = dob
+        user.email = email
         user.city = city
 
         user.save()
@@ -74,6 +76,19 @@ def user_hobbies_api(request):
     user = get_object_or_404(User, username=request.user)
     return JsonResponse({"dict": user.get_hobbies()})
 
+@login_required
+def user_delete_hobby(request):
+    user = get_object_or_404(User, username=request.user)
+    if request.method == "DELETE":
+        body_unicode = request.body.decode('utf8')
+        body = json.loads(body_unicode)
+
+        hobbyName = body["hobby_name"]
+
+        hobby = get_object_or_404(Hobby, name=hobbyName)
+        user.hobbies.remove(hobby)
+
+        return JsonResponse({"dict": user.get_hobbies()})
 
 @login_required
 def toggle_hobby(request):

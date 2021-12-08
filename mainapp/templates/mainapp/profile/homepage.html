@@ -5,7 +5,7 @@
 {% load static %}
 <div id="app">
     {% csrf_token %}
-    <div class="container">
+    <div class="container d-flex flex-nowrap">
         <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
             <img v-if="editMode==false" src="{% static 'images/default.png' %}" class="img-thumbnail mb-3">
             <ul class="list-group">
@@ -28,6 +28,11 @@
                     <input v-if="editMode==true" id="date" type="date" name="dob" class="form-control" id="birthday" name="birthday" :value="dob" required>
                 </li>
                 <li class="list-group-item">
+                    <strong>Email: </strong>
+                    <p v-if="editMode==false" style="display: inline">[[ email ]]</p>
+                    <input v-if="editMode==true" id="email" type="email" name="email" class="form-control" :value="email" required>
+                </li>
+                <li class="list-group-item">
                     <strong>City: </strong>
                     <p v-if="city.length > 0 && editMode==false" style="display: inline">
                         [[ city ]]
@@ -40,6 +45,23 @@
               </ul>
               <button type="button" v-if="editMode == false" @click="editMode = true"class="btn btn-primary mt-3">Edit Profile</button>
               <button type="button" v-if="editMode == true" @click="editProfile()"class="btn btn-success mt-3">Save Changes</button>
+        </div>
+        <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: scroll">
+            <h4 class="text-center">My Hobbies</h2>
+            <table class="table">
+                <tbody>
+                    <tr v-for="(hobby) in hobbies">
+                        <td class="align-middle text-center">
+                            <a :href="hobby.api">
+                                [[ hobby.name ]]
+                            </a>
+                        </td>
+                        <td class="align-middle text-center" v-if="editMode==true">
+                            <button @click="removeHobby(hobby)" type="button" class="btn btn-danger">Remove</button>
+                        </td>
+                    </tr>                  
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -55,6 +77,7 @@
                 surname: null,
                 dob: null,
                 city: "",
+                email: "",
                 hobbies: [],
                 editMode: false
             }
@@ -67,6 +90,8 @@
                 this.surname = profileData.user.surname
                 this.dob = profileData.user.dob
                 this.city = profileData.user.city
+                this.hobbies = profileData.user.hobbies
+                this.email = profileData.user.email
             } else {
                 alert("It didn't work")
             }
@@ -76,7 +101,8 @@
                 data = {
                     name: document.getElementById("name").value,
                     city: document.getElementById("city").value,
-                    dob: document.getElementById("date").value
+                    dob: document.getElementById("date").value,
+                    email: document.getElementById("email").value
                 }
                 let profileResponse = await fetch("{% url 'profile api' %}", {
                     method: "PUT",
@@ -92,12 +118,31 @@
                     this.surname = profileData.user.surname
                     this.dob = profileData.user.dob
                     this.city = profileData.user.city
+                    this.email = profileData.user.email
                     this.editMode = false
                 } else {
                     swal("Error", "Please enter a first name and surname", "error")
                 }
+            },
+            async removeHobby(hobby) {
+                let data = {
+                    hobby_name: hobby.name
+                }
+
+                let deleteHobbyResponse = await fetch("{% url 'delete hobby api' %}", {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                        },
+                        body: JSON.stringify(data)
+                });
+
+                if (deleteHobbyResponse.ok) {
+                    resJson = await deleteHobbyResponse.json()
+                    this.hobbies = resJson["dict"]
+                }
             }
-        }
+        },
     })
     app.mount('#app')
 </script>

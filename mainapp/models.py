@@ -31,7 +31,9 @@ class User(AbstractUser):
             'first_name': self.first_name,
             'surname': self.last_name,
             'dob': self.date_of_birth,
-            'city': self.city
+            'city': self.city,
+            'email': self.email,
+            'hobbies': self.get_hobbies()
         }
 
     def __str__(self):
