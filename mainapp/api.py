@@ -5,8 +5,8 @@ from django.core.exceptions import BadRequest
 from django.http import JsonResponse
 from django.http.response import HttpResponseBadRequest, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse, Http404
 
 
 from .models import *
@@ -89,6 +89,17 @@ def user_delete_hobby(request):
         user.hobbies.remove(hobby)
 
         return JsonResponse({"dict": user.get_hobbies()})
+
+@login_required
+def uploadFiles(request):
+    user = get_object_or_404(User, username=request.user)
+
+    if 'profile_pic' in request.FILES:
+        user.profile_pic = request.FILES['profile_pic']
+        user.save()
+        return JsonResponse({'profile_pic': user.profile_pic.url})
+    else:
+        raise Http404('Image file not received')
 
 @login_required
 def toggle_hobby(request):

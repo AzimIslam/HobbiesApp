@@ -6,7 +6,7 @@ from django.urls import reverse
 # Create your models here.
 
 class User(AbstractUser):
-    profile_pic = models.ImageField(blank=True, null=True)
+    profile_pic = models.ImageField(default="default.png" ,blank=True, null=True)
     city = models.CharField(blank=True, max_length=150, null=True)
     date_of_birth = models.DateField(null=True)
     hobbies = models.ManyToManyField(
@@ -28,6 +28,7 @@ class User(AbstractUser):
     def to_dict(self):
         return {
             'username': self.username,
+            'profile_pic': self.get_profile_picture(),
             'first_name': self.first_name,
             'surname': self.last_name,
             'dob': self.date_of_birth,
@@ -35,6 +36,13 @@ class User(AbstractUser):
             'email': self.email,
             'hobbies': self.get_hobbies()
         }
+
+    def get_profile_picture(self):
+        if self.profile_pic:
+            return self.profile_pic.url
+        else:
+            return "/assets/images/default.png"
+
 
     def __str__(self):
         return self.username
