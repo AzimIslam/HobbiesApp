@@ -5,15 +5,17 @@
     <h1>Add New Hobbies {{ user }}</h1>
     <div class="full-screen d-flex align-items-center justify-content-center align-content-center text-center flex-column">
       <div class="container">
-        <div class="card shadow mx-auto text-left m-3 p-4" style="width: 30rem; height: 30rem; background-color: rgba(242, 240, 240, 0.8)">
+        <div class="card shadow mx-auto text-left m-3 p-4" style="width: 30rem; height: 30rem; background-color: rgba(242, 240, 240, 0.8);">
             <h5 class="card-title pt-2 pb-4">Search For A Hobbie</h5>
             <div class="table-responsive">
-              <table class="table">
+              <input type="text" id="myInput" onkeyup="search_for_hobby()" placeholder="Search For A Hobby..."
+                style="text-align: center; background-color: rgba(232, 230, 230); width: 90%; border: none; margin-bottom: 0.5em;">
+              <table class="table" id="myTable">
                 <tbody>
                   <template v-for="(hobby) in hobbies">
                       <tr>
                       <td colspan="3">
-                      <a :href="hobby.api">[[ hobby.name ]]</a>
+                      <a class="hobbies" :href="hobby.api">[[ hobby.name ]]</a>
                       </td>
                     </tr>
                   </template>
@@ -30,6 +32,28 @@
 
 {% block scripts %}
   <script>
+    // Got code from https://www.w3schools.com/howto/howto_js_filter_table.asp
+    function search_for_hobby() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
     let myApp = Vue.createApp({
         delimiters: ["[[", "]]"],
         data() {
@@ -47,6 +71,8 @@
           }
         },
         methods: {
+
+
         }
       })
     myApp.mount('#app')
