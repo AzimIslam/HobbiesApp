@@ -165,3 +165,35 @@ def users_api(request):
             'common_hobbies': [number for number in num_common_hobbies_users],
             'users_sent_request_to': [user.to_user.username for user in users_sent_requests_to],
         })
+
+
+@login_required
+def friend_request_api(request):
+    logged_in_user = request.user
+
+    if request.method == "POST":
+        try:
+            POST = json.loads(request.body)
+            to_user = POST["userToRequest"]
+            friend_request = FriendRequest(
+                from_user = logged_in_user,
+                to_user = User.objects.get(username=to_user)
+            )
+            friend_request.save()
+            return JsonResponse({})
+        except:
+            return HttpResponseNotFound("Invalid data")
+
+    if request.method == "DELETE":
+        try:
+            POST = json.loads(request.body)
+            to_user = POST["userToRemoveRequest"]
+            friend_request = FriendRequest.objects.get(from_user=logged_in_user, to_user=User.objects.get(username=to_user))
+            friend_request.delete()
+            return JsonResponse({})
+        except:
+            return HttpResponseNotFound("Invalid data")
+
+    return HttpResponseBadRequest("Invalid method")
+
+

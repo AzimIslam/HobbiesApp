@@ -42,6 +42,8 @@ urlpatterns = [
     path('api/uploadFile/', api.uploadFiles, name="uploadFile api"),
     
     path('api/users/', api.users_api, name="users api"),
+    path('api/friendRequest/', api.friend_request_api, name="friend request api"),
+
 
 ]
 

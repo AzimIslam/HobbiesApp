@@ -44,8 +44,8 @@
                                 <button type="button" class=" btn btn-info">View Hobbies</button>
                             </td>
                             <td>
-                                <button v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
-                                <button v-else type="button" class=" btn btn-info">Add Friend</button>
+                                <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
+                                <button @click="sendFriendRequest(user)" v-else type="button" class=" btn btn-info">Add Friend</button>
                             </td>
                         </tr>
                     </tbody>
@@ -84,8 +84,60 @@
                 alert("Failed to load list of users");
             }
 
-            console.log(this.users_sent_request_to)
+            //console.log(this.users_sent_request_to)
+        },
+
+        methods: {
+            async sendFriendRequest(userToRequest) {
+                username = userToRequest.username
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    this.users_sent_request_to.push(username)
+                }
+                else {
+                    alert("Failed to send request to " + username);
+                }
+            },
+
+            async cancelFriendRequest(userToRemoveRequest) {
+                username = userToRemoveRequest.username
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRemoveRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    index = this.users_sent_request_to.indexOf(username);
+                    this.users_sent_request_to.splice(index, 1);
+
+                }
+                else {
+                    alert("Failed to cancel friend request to " + username);
+                }
+            },
+
+
         }
+    
+    
     })
 
     myApp.mount('#app')

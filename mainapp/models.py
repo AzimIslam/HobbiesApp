@@ -26,6 +26,7 @@ class User(AbstractUser):
         dob = self.date_of_birth
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
         
+        
         return {
             'username': self.username,
             'profile_pic': self.get_profile_picture(),
@@ -55,7 +56,7 @@ class User(AbstractUser):
             for hobby in self.hobbies.all()
         ]
 
-class FriendRequest(models.Model):
+class FriendRequest(models.Model): 
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="from_user")
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="to_user")
 
