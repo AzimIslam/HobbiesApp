@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import NullBooleanField
 from django.urls import reverse
+import datetime
 
 # Create your models here.
 
@@ -19,24 +20,24 @@ class User(AbstractUser):
         blank=True,
         related_name='friends'
     )
-    requested_friends = models.ManyToManyField(
-        to='self',
-        blank=True,
-        related_name="requests"
-    )
 
     def to_dict(self):
+        today = datetime.date.today()
+        dob = self.date_of_birth
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        
+        
         return {
             'username': self.username,
             'profile_pic': self.get_profile_picture(),
             'first_name': self.first_name,
             'surname': self.last_name,
             'dob': self.date_of_birth,
+            'age': age,
             'city': self.city,
             'email': self.email,
             'profile': reverse('user profile api', kwargs={'username': self.username}),
             'hobbies': self.get_hobbies(),
-            'requests': self.get_friend_requests()
         }
 
     def get_profile_picture(self):
@@ -55,11 +56,11 @@ class User(AbstractUser):
             for hobby in self.hobbies.all()
         ]
 
-    def get_friend_requests(self):
-        return [
-            request.to_dict()['username']
-            for request in self.requested_friends.all()
-        ]
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="from_user")
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="to_user")
+
+
 
 class Hobby(models.Model):
     name = models.CharField(max_length=150, unique=True)

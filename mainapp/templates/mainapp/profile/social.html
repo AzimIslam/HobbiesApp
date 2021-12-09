@@ -24,51 +24,28 @@
                     </thead>
                 
                     <tbody class="align-middle">
-                        <tr>
+                        <tr v-for="(user, index) in users_not_friends_with">
                             <td>
-                                <a href="">rikhil</a>
+                                <a :href="user.profile">[[ user.username ]]</a>
                             </td>
                             <td>
-                                <span>Rikhil Shah</span>
+                                <span>[[ user.first_name ]] </span>
                             </td>
                             <td>
-                                <span>21</span>
+                                <span>[[ user.age ]]</span>
                             </td>
                             <td>
-                                <span>Londoff</span>
+                                <span>[[ user.city ]]</span>
                             </td>
                             <td>
-                                <span>4</span>
-                            </td>
-                            <td>
-                                <button type="button" class=" btn btn-info">View Hobbies</button>
-                            </td>
-                            <td>
-                                <button type="button" class=" btn btn-info">Add Friend</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <a href="">rikhil</a>
-                            </td>
-                            <td>
-                                <span>Rikhil Shah</span>
-                            </td>
-                            <td>
-                                <span>21</span>
-                            </td>
-                            <td>
-                                <span>Londoff</span>
-                            </td>
-                            <td>
-                                <span>4</span>
+                                <span>[[ common_hobbies[index] ]]</span>
                             </td>
                             <td>
                                 <button type="button" class=" btn btn-info">View Hobbies</button>
                             </td>
                             <td>
-                                <button type="button" class=" btn btn-danger">Request Sent</button>
+                                <button v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
+                                <button v-else type="button" class=" btn btn-info">Add Friend</button>
                             </td>
                         </tr>
                     </tbody>
@@ -88,24 +65,29 @@
         delimiters: ["[[", "]]"],
         data() {
             return {
-                users: [],
+                users_not_friends_with: [],
+                common_hobbies: [],
+                users_sent_request_to: [],
             }
         },
-
 
         async created() {
             let response = await fetch("{% url 'users api' %}");
             if (response.ok) {
                 let data = await response.json();
-                this.users = data.users;
+                this.users_not_friends_with = data.users_not_friends_with
+                this.common_hobbies = data.common_hobbies
+                this.users_sent_request_to = data.users_sent_request_to
             }
+
             else {
                 alert("Failed to load list of users");
             }
-        }
 
-    
-    
+            console.log(this.users_sent_request_to)
+        }
     })
+
+    myApp.mount('#app')
 </script>
 {% endblock %}

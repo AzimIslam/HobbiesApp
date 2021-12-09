@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Hobby
+from .models import User, Hobby, FriendRequest
 
 # Register your models here.
 
@@ -10,4 +10,8 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Hobby)
 class HobbyAdmin(admin.ModelAdmin):
     list_display = ["name", "description"]
+
+@admin.register(FriendRequest)
+class FriendRequestAdmin(admin.ModelAdmin):
+    list_display = ["from_user", "to_user"]
 
