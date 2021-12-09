@@ -57,7 +57,7 @@ class User(AbstractUser):
 
     def get_friend_requests(self):
         return [
-            request.to_dict()
+            request.to_dict()['username']
             for request in self.requested_friends.all()
         ]
 
