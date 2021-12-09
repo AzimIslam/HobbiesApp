@@ -63,6 +63,17 @@ def hobby_api(request, hobby_name):
         return HttpResponse(f"Invalid Hobby: {hobby_name}")
 
 @login_required
+def user_profile_api(request, username):
+    try:
+        user = User.objects.get(username=username)
+        json_obj = user.to_dict()
+        return render(request, 'mainapp/profile/profile.html', {
+            'profile': json_obj
+        })
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User not found")
+
+@login_required
 def hobbies_api(request):
     return JsonResponse({
         'hobbies': [
