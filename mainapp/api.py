@@ -128,3 +128,38 @@ def toggle_hobby(request):
             return JsonResponse({"added": body['exisitng_hobby']})
         except:
             return HttpResponseNotFound("Hobby Not Added")
+
+
+@login_required
+def users_api(request):
+    if request.method == "GET":
+        logged_in_user = request.user.username
+        users_not_friends_with = []
+        num_common_hobbies_users = []
+        for user in User.objects.all():
+            if user.to_dict()["username"] == logged_in_user:
+                continue
+            else:
+                friends_with_user = False
+                for friend in user.friends.all():
+                    if logged_in_user == friend.username:
+                        friends_with_user = True
+                        break
+                if not friends_with_user:
+                    not_friend_hobbies = user.hobbies.all()
+                    logged_in_user_hobbies = request.user.hobbies.all()
+
+                    common_hobbies = list(set(not_friend_hobbies).intersection(logged_in_user_hobbies))
+                    num_common_hobbies = len(common_hobbies)
+
+                    users_not_friends_with.append(user)
+                    num_common_hobbies_users.append(num_common_hobbies)
+
+        users_sent_requests_to = FriendRequest.objects.filter(from_user=request.user)
+
+                    
+        return JsonResponse({
+            'users_not_friends_with': [user.to_dict() for user in users_not_friends_with],
+            'common_hobbies': [number for number in num_common_hobbies_users],
+            'users_sent_request_to': [user.to_user.username for user in users_sent_requests_to],
+        })

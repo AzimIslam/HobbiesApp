@@ -1,0 +1,93 @@
+{% extends 'mainapp/profile/base.html' %}
+
+{% block content %}
+  <div id=app>
+    {% csrf_token %}
+    <h1 class="">Social Hub {{ user }}</h1>
+    <div class="full-screen text-center flex-column">
+      <div class="container">
+        <div class="card shadow mx-auto text-left mt-5 m-3 p-4" style="width: 100%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
+            <h5 class="card-title pt-2 pb-4">Find a new Friend!</h5>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Common Hobbies</th>
+                            <th scope="col">Hobbies</th>
+                            <th scope="col">Add Friend</th>
+                        </tr>
+                    </thead>
+                
+                    <tbody class="align-middle">
+                        <tr v-for="(user, index) in users_not_friends_with">
+                            <td>
+                                <a :href="user.profile">[[ user.username ]]</a>
+                            </td>
+                            <td>
+                                <span>[[ user.first_name ]] </span>
+                            </td>
+                            <td>
+                                <span>[[ user.age ]]</span>
+                            </td>
+                            <td>
+                                <span>[[ user.city ]]</span>
+                            </td>
+                            <td>
+                                <span>[[ common_hobbies[index] ]]</span>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-info">View Hobbies</button>
+                            </td>
+                            <td>
+                                <button v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
+                                <button v-else type="button" class=" btn btn-info">Add Friend</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                users_not_friends_with: [],
+                common_hobbies: [],
+                users_sent_request_to: [],
+            }
+        },
+
+        async created() {
+            let response = await fetch("{% url 'users api' %}");
+            if (response.ok) {
+                let data = await response.json();
+                this.users_not_friends_with = data.users_not_friends_with
+                this.common_hobbies = data.common_hobbies
+                this.users_sent_request_to = data.users_sent_request_to
+            }
+
+            else {
+                alert("Failed to load list of users");
+            }
+
+            console.log(this.users_sent_request_to)
+        }
+    })
+
+    myApp.mount('#app')
+</script>
+{% endblock %}
