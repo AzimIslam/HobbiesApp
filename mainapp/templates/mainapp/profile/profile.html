@@ -32,7 +32,9 @@
                     </p>
                 </li>
               </ul>
+              {% if profile.username != user.username %}
               <button type="button" class="btn btn-success mt-3">Send Friend Request</button>
+              {% endif %}
         </div>
         <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: auto">
             <h4 class="text-center">{{ profile.username }}'s Hobbies</h2>
@@ -41,7 +43,7 @@
                     {% for hobby in profile.hobbies %}
                     <tr>
                         <td class="align-middle text-center">
-                            <a href="{{ hobby.api}}">
+                            <a href="{{ hobby.api }}">
                                 {{ hobby.name }}
                             </a>
                         </td>
@@ -52,4 +54,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+</script>
 {% endblock %}

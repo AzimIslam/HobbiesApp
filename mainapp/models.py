@@ -26,7 +26,6 @@ class User(AbstractUser):
         dob = self.date_of_birth
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
         
-        
         return {
             'username': self.username,
             'profile_pic': self.get_profile_picture(),
