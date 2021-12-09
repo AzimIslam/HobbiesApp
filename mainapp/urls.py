@@ -29,7 +29,7 @@ urlpatterns = [
     path('logout/', views.logout, name="logout"),
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
     path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
-    path('profile/<str:user_profile>', api.user_profile_api, name="user profile api"),
+    path('profile/<str:username>', api.user_profile_api, name="user profile api"),
 
     path('api/hobbies/', api.hobbies_api, name="hobbies api"),
     path('api/toggleHobby/', api.toggle_hobby, name="toggle hobby api"),
