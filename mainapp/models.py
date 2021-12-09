@@ -36,7 +36,7 @@ class User(AbstractUser):
             'email': self.email,
             'profile': reverse('user profile api', kwargs={'username': self.username}),
             'hobbies': self.get_hobbies(),
-            'requests': self.requested_friends
+            'requests': self.get_friend_requests()
         }
 
     def get_profile_picture(self):
@@ -55,6 +55,11 @@ class User(AbstractUser):
             for hobby in self.hobbies.all()
         ]
 
+    def get_friend_requests(self):
+        return [
+            request.to_dict()['username']
+            for request in self.requested_friends.all()
+        ]
 
 class Hobby(models.Model):
     name = models.CharField(max_length=150, unique=True)
