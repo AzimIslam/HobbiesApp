@@ -35,7 +35,8 @@ class User(AbstractUser):
             'city': self.city,
             'email': self.email,
             'profile': reverse('user profile api', kwargs={'username': self.username}),
-            'hobbies': self.get_hobbies()
+            'hobbies': self.get_hobbies(),
+            'requests': self.requested_friends
         }
 
     def get_profile_picture(self):
