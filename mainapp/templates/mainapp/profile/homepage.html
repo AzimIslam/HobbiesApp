@@ -35,10 +35,10 @@
                 </li>
                 <li class="list-group-item">
                     <strong>City: </strong>
-                    <p v-if="city.length > 0 && editMode==false" style="display: inline">
+                    <p v-if="city != null && city.length > 0  && editMode==false" style="display: inline">
                         [[ city ]]
                     </p>
-                    <p v-if="city.length == 0 && editMode==false" style="display: inline">
+                    <p v-if="(city == null || city.length == 0) && editMode==false" style="display: inline">
                         Not Specified
                     </p>
                     <input id ="city" v-if="editMode==true" type="text" class="form-control" :value="city">
