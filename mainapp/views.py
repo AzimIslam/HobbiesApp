@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib import auth
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from mainapp.models import *
 from django.http import JsonResponse
@@ -70,6 +70,12 @@ def home_view(request):
     return render(request, 'mainapp/profile/homepage.html')
 
 @login_required
+def social_view(request):
+    return render(request, 'mainapp/profile/social.html')
+
+@login_required
 def logout(request):
     auth.logout(request)
     return redirect('/')
+
+

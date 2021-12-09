@@ -1,0 +1,111 @@
+{% extends 'mainapp/profile/base.html' %}
+
+{% block content %}
+  <div id=app>
+    {% csrf_token %}
+    <h1 class="">Social Hub {{ user }}</h1>
+    <div class="full-screen text-center flex-column">
+      <div class="container">
+        <div class="card shadow mx-auto text-left mt-5 m-3 p-4" style="width: 100%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
+            <h5 class="card-title pt-2 pb-4">Find a new Friend!</h5>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Common Hobbies</th>
+                            <th scope="col">Hobbies</th>
+                            <th scope="col">Add Friend</th>
+                        </tr>
+                    </thead>
+                
+                    <tbody class="align-middle">
+                        <tr>
+                            <td>
+                                <a href="">rikhil</a>
+                            </td>
+                            <td>
+                                <span>Rikhil Shah</span>
+                            </td>
+                            <td>
+                                <span>21</span>
+                            </td>
+                            <td>
+                                <span>Londoff</span>
+                            </td>
+                            <td>
+                                <span>4</span>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-info">View Hobbies</button>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-info">Add Friend</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <a href="">rikhil</a>
+                            </td>
+                            <td>
+                                <span>Rikhil Shah</span>
+                            </td>
+                            <td>
+                                <span>21</span>
+                            </td>
+                            <td>
+                                <span>Londoff</span>
+                            </td>
+                            <td>
+                                <span>4</span>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-info">View Hobbies</button>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-danger">Request Sent</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                users: [],
+            }
+        },
+
+
+        async created() {
+            let response = await fetch("{% url 'users api' %}");
+            if (response.ok) {
+                let data = await response.json();
+                this.users = data.users;
+            }
+            else {
+                alert("Failed to load list of users");
+            }
+        }
+
+    
+    
+    })
+</script>
+{% endblock %}

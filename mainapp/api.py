@@ -117,3 +117,8 @@ def toggle_hobby(request):
             return JsonResponse({"added": body['exisitng_hobby']})
         except:
             return HttpResponseNotFound("Hobby Not Added")
+
+
+@login_required
+def users_api(request):
+    pass
