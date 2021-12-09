@@ -34,7 +34,9 @@ def profile_api(request):
         user.city = city
 
         user.save()
-    return JsonResponse({'user': user.to_dict()})
+
+    newUser = User.objects.get(username=user.username)
+    return JsonResponse({'user': newUser.to_dict()})
 
 @login_required
 def hobbie_api(request):
