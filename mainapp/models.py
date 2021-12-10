@@ -36,7 +36,7 @@ class User(AbstractUser):
             'age': age,
             'city': self.city,
             'email': self.email,
-            'profile': reverse('user profile api', kwargs={'username': self.username}),
+            'profile': reverse('userProfile', kwargs={'username': self.username}),
             'hobbies': self.get_hobbies(),
         }
 
