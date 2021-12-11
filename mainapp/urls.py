@@ -40,9 +40,9 @@ urlpatterns = [
     path('api/hobby/<str:hobby_name>/', api.hobby_api, name="hobby api"),
     path('api/deleteUserHobby/', api.user_delete_hobby, name="delete hobby api"),
     path('api/uploadFile/', api.uploadFiles, name="uploadFile api"),
-    
     path('api/users/', api.users_api, name="users api"),
     path('api/friendRequest/', api.friend_request_api, name="friend request api"),
+    path('api/friend/', api.friend_api, name="friend api"),
 
 
 ]

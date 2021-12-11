@@ -81,19 +81,26 @@ def logout(request):
 
 @login_required
 def user_profile_view(request, username):
-    print("running")
     try:
         user = User.objects.get(username=username)
         json_obj = user.to_dict()
         requestSent = False
+        friendsWith = False
         try:
             requestSent = FriendRequest.objects.get(from_user=request.user, to_user=user)
             requestSent = True
         except:
             pass
+        try:
+            friendsWith = request.user.friends.all().get(username=username)
+            friendsWith = True
+        except:
+            pass
+
         return render(request, 'mainapp/profile/profile.html', {
             'profile': json_obj,
             'requestSent': requestSent,
+            'friendsWith': friendsWith,
         })
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")

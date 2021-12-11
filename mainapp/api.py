@@ -188,3 +188,19 @@ def friend_request_api(request):
     return HttpResponseBadRequest("Invalid method")
 
 
+@login_required
+def friend_api(request):
+    logged_in_user = request.user
+
+    if request.method == "DELETE":
+        try:
+            POST = json.loads(request.body)
+            friendToRemove = POST["friendToRemove"]
+            logged_in_user.friends.remove(User.objects.get(username=friendToRemove))
+            return JsonResponse({})
+        except:
+            return HttpResponseNotFound("Invalid data")
+
+    return HttpResponseBadRequest("Invalid method")
+
+
