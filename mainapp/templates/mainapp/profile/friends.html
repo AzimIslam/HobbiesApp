@@ -141,7 +141,7 @@
               if (response.ok) {
                 console.log(this.users_friends_with)
 
-                //this.users_friends_with = this.users_friends_with.map(friend => friend.username != user.username)
+                this.users_friends_with = this.users_friends_with.filter(friend => friend.username != user.username)
               }
             }
         }
