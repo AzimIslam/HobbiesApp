@@ -30,6 +30,8 @@ urlpatterns = [
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
     path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
     path('social/', views.social_view, name="social"),
+    path('friends/', views.friends_view, name="friends"),
+    path('pendingFriendRequests/', views.pending_friend_request_view, name="pendingFriendRequests"),
     path('profile/<str:username>', views.user_profile_view, name="userProfile"),
 
     path('api/hobbies/', api.hobbies_api, name="hobbies api"),
