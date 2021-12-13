@@ -117,9 +117,9 @@
         },
 
         async created() {
-            let response = await fetch("{% url 'users api' %}");
-            if (response.ok) {
-                let data = await response.json();
+            let response1 = await fetch("{% url 'users api' %}");
+            if (response1.ok) {
+                let data = await response1.json();
                 this.users_not_friends_with = data.users_not_friends_with
                 console.log(this.users_not_friends_with)
                 this.common_hobbies = data.common_hobbies
@@ -130,7 +130,15 @@
                 alert("Failed to load list of users");
             }
 
-            //console.log(this.users_sent_request_to)
+            console.log(this.users_not_friends_with)
+
+            let response2 = await fetch("{% url 'friend request api' %}")
+            if (response2.ok) {
+                let data2 = await response2.json()
+                for(let i=0; i < data2["data"].length; i++) {
+                    this.users_not_friends_with = this.users_not_friends_with.filter(u => u.username != data2["data"][i].username)
+                }
+            }
         },
 
         methods: {

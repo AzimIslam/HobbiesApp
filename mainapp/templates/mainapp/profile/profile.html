@@ -34,8 +34,11 @@
               </ul>
               {% if profile.username != user.username %}
               <button @click="cancelFriendRequest()" v-if="(requestSent == true && friendsWith == false)" type="button" class="btn btn-danger mt-3">Cancel Request</button>
-              <button @click="sendFriendRequest()" v-if="(requestSent == false && friendsWith == false)" type="button" class="btn btn-success mt-3">Send Friend Request</button>
+              <button @click="sendFriendRequest()" v-if="(requestSent == false && friendsWith == false && incomingRequest != true)" type="button" class="btn btn-success mt-3">Send Friend Request</button>
               <button @click="removeFriend()" v-if="friendsWith == true" type="button" class="btn btn-danger mt-3">Remove Friend</button>
+              <a class="text-center" href="{% url 'pendingFriendRequests' %}">
+                <button v-if="incomingRequest == true" type="button" class="btn btn-info mt-3">View Friend Request</button>
+              </a>
               {% endif %}
         </div>
         <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: auto">
@@ -70,6 +73,7 @@
             return {
                 requestSent: false,
                 friendsWith: false,
+                incomingRequest: false
             }
         },
 
@@ -80,6 +84,18 @@
 
             console.log(this.requestSent)
             console.log(this.friendsWith)
+
+            let response = await fetch("{% url 'friend request api' %}")
+            if (response.ok) {
+                data = await response.json()
+                for(let i=0; i < data["data"].length; i++) {
+                    if (data["data"][i].username == "{{ profile.username }}") {
+                        this.incomingRequest = true
+                    }
+                }
+            }
+
+
         },
 
         methods: {
