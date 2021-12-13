@@ -148,14 +148,15 @@ def users_api(request):
                     users_not_friends_with.append(user)
                     num_common_hobbies_users.append(num_common_hobbies)
 
+
         users_sent_requests_to = FriendRequest.objects.filter(from_user=request.user)
 
-                    
         return JsonResponse({
             'users_not_friends_with': [user.to_dict() for user in users_not_friends_with],
             'common_hobbies': [number for number in num_common_hobbies_users],
             'users_sent_request_to': [user.to_user.username for user in users_sent_requests_to],
         })
+
 
 
 @login_required
@@ -197,10 +198,52 @@ def friend_request_api(request):
 
 
 @login_required
-def friend_api(request):
-    logged_in_user = request.user
+def remove_friend_api(request):
+
+    body_unicode = request.body.decode('utf8')
+    body = json.loads(body_unicode)
 
     if request.method == "DELETE":
+        logged_in_user = get_object_or_404(User, username=request.user.username)
+        friend_to_remove = User.objects.get(username=body['username'])
+        logged_in_user.friends.remove(friend_to_remove)
+        logged_in_user.save()
+        return JsonResponse({})
+
+
+@login_required
+def friend_api(request):
+
+    if request.method == "GET":
+        logged_in_user = request.user.username
+        users_friends_with = []
+        num_common_hobbies_users = []
+        for user in User.objects.all():
+            if user.to_dict()["username"] == logged_in_user:
+                continue
+            else:
+                friends_with_user = False
+                for friend in user.friends.all():
+                    if logged_in_user == friend.username:
+                        friends_with_user = True
+                        break
+                if friends_with_user:
+                    friend_hobbies = user.hobbies.all()
+                    logged_in_user_hobbies = request.user.hobbies.all()
+
+                    common_hobbies = list(set(friend_hobbies).intersection(logged_in_user_hobbies))
+                    num_common_hobbies = len(common_hobbies)
+
+                    users_friends_with.append(user)
+                    num_common_hobbies_users.append(num_common_hobbies)
+
+        return JsonResponse({
+            'users_friends_with': [user.to_dict() for user in users_friends_with],
+            'common_hobbies': [number for number in num_common_hobbies_users],
+        })
+
+    if request.method == "DELETE":
+        logged_in_user = request.user
         try:
             POST = json.loads(request.body)
             friendToRemove = POST["friendToRemove"]
