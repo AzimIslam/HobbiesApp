@@ -5,15 +5,16 @@
 {% load static %}
 <div id="app">
     {% csrf_token %}
-    <div class="container">
+    <div class="container d-flex flex-nowrap">
         <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
-            <img v-if="editMode==false" src="{% static 'images/default.png' %}" class="img-thumbnail mb-3">
+            <img v-if="editMode==false" :src="imageSrc" class="img-fluid mb-3" style="max-width: 100%; height: 50%;" >
             <ul class="list-group">
                 <li v-if="editMode==true" class="list-group-item">
                     <div  class="input-group mb-3">
                         <div class="custom-file">
                         <label class="custom-file-label" for="inputGroupFile01">Choose Profile Pic</label>
-                        <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/gif, image/jpeg, image/png">
+                        <input type="file" class="custom-file-input" id="profile_pic" accept="image/gif, image/jpeg, image/png">
+                        <button type="button" @click="uploadImage()" v-if="editMode == true" class="btn btn-success mt-3">Upload Image</button>
                         </div>
                     </div>
                 </li>
@@ -28,11 +29,16 @@
                     <input v-if="editMode==true" id="date" type="date" name="dob" class="form-control" id="birthday" name="birthday" :value="dob" required>
                 </li>
                 <li class="list-group-item">
+                    <strong>Email: </strong>
+                    <p v-if="editMode==false" style="display: inline">[[ email ]]</p>
+                    <input v-if="editMode==true" id="email" type="email" name="email" class="form-control" :value="email" required>
+                </li>
+                <li class="list-group-item">
                     <strong>City: </strong>
-                    <p v-if="city.length > 0 && editMode==false" style="display: inline">
+                    <p v-if="city != null && city.length > 0  && editMode==false" style="display: inline">
                         [[ city ]]
                     </p>
-                    <p v-if="city.length == 0 && editMode==false" style="display: inline">
+                    <p v-if="(city == null || city.length == 0) && editMode==false" style="display: inline">
                         Not Specified
                     </p>
                     <input id ="city" v-if="editMode==true" type="text" class="form-control" :value="city">
@@ -40,6 +46,23 @@
               </ul>
               <button type="button" v-if="editMode == false" @click="editMode = true"class="btn btn-primary mt-3">Edit Profile</button>
               <button type="button" v-if="editMode == true" @click="editProfile()"class="btn btn-success mt-3">Save Changes</button>
+        </div>
+        <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: auto">
+            <h4 class="text-center">My Hobbies</h2>
+            <table class="table">
+                <tbody>
+                    <tr v-for="(hobby) in hobbies">
+                        <td class="align-middle text-center">
+                            <a :href="hobby.api">
+                                [[ hobby.name ]]
+                            </a>
+                        </td>
+                        <td class="align-middle text-center" v-if="editMode==true">
+                            <button @click="removeHobby(hobby)" type="button" class="btn btn-danger">Remove</button>
+                        </td>
+                    </tr>                  
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -55,8 +78,11 @@
                 surname: null,
                 dob: null,
                 city: "",
+                email: "",
+                imageSrc: "",
                 hobbies: [],
-                editMode: false
+                editMode: false,
+                filesUploaded: 0
             }
         },
         async created() {
@@ -67,37 +93,88 @@
                 this.surname = profileData.user.surname
                 this.dob = profileData.user.dob
                 this.city = profileData.user.city
+                this.hobbies = profileData.user.hobbies
+                this.email = profileData.user.email
+                this.imageSrc = profileData.user.profile_pic
             } else {
                 alert("It didn't work")
             }
         },
         methods: {
             async editProfile() {
-                data = {
-                    name: document.getElementById("name").value,
-                    city: document.getElementById("city").value,
-                    dob: document.getElementById("date").value
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.getElementById("email").value) && document.getElementById("email").value.length > 0) {
+                    let data = {
+                        name: document.getElementById("name").value,
+                        city: document.getElementById("city").value,
+                        dob: document.getElementById("date").value,
+                        email: document.getElementById("email").value
+                    }
+                    let profileResponse = await fetch("{% url 'profile api' %}", {
+                        method: "PUT",
+                        headers: {
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (profileResponse.ok) {
+                        profileData = await profileResponse.json()
+                        this.first_name = profileData.user.first_name
+                        this.surname = profileData.user.surname
+                        this.dob = profileData.user.dob
+                        this.city = profileData.user.city
+                        this.email = profileData.user.email
+                        this.editMode = false
+                    } else {
+                        swal("Error", "Internal Server Error", "error")
+                    }
+                } else {
+                    swal("Error", "Please enter a valid email address", "error")
                 }
-                let profileResponse = await fetch("{% url 'profile api' %}", {
-                    method: "PUT",
-                    headers: {
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
-                    },
-                    body: JSON.stringify(data)
+            },
+            async removeHobby(hobby) {
+                let data = {
+                    hobby_name: hobby.name
+                }
+
+                let deleteHobbyResponse = await fetch("{% url 'delete hobby api' %}", {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                        },
+                        body: JSON.stringify(data)
                 });
 
-                if (profileResponse.ok) {
-                    profileData = await profileResponse.json()
-                    this.first_name = profileData.user.first_name
-                    this.surname = profileData.user.surname
-                    this.dob = profileData.user.dob
-                    this.city = profileData.user.city
-                    this.editMode = false
+                if (deleteHobbyResponse.ok) {
+                    resJson = await deleteHobbyResponse.json()
+                    this.hobbies = resJson["dict"]
+                }
+            },
+            async uploadImage() {
+                if (document.getElementById("profile_pic").files.length == 1) {
+                    const formData = new FormData()
+                    formData.append("profile_pic", document.getElementById("profile_pic").files[0])
+
+                    let profileResponse = await fetch("{% url 'uploadFile api' %}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                        },
+                        body: formData
+                    });
+
+                    if(profileResponse.ok) {
+                        jsonResponse = await profileResponse.json()
+                        this.imageSrc = jsonResponse['profile_pic']
+                        swal("Success", "Profile picture successfully changed", "success")
+                    } else {
+                        swal("Error", "Oops, something went wrong!", "error")
+                    }
                 } else {
-                    swal("Error", "Please enter a first name and surname", "error")
+                    swal("Error", "Please select a image file", "error")
                 }
             }
-        }
+        },
     })
     app.mount('#app')
 </script>

@@ -1,0 +1,191 @@
+{% extends 'mainapp/profile/base.html' %}
+
+{% block content %}
+  <div id=app>
+    {% csrf_token %}
+    <h1 class="">Social Hub {{ user }}</h1>
+    <div class="full-screen mx-auto flex-column">
+      <div class="container">
+        <div class="card shadow mx-auto text-left mt-5 m-3 p-4" style="width: 100%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
+            <h5 class="card-title pt-2 text-center">Find a new Friend!</h5>
+            
+            <div class="table-responsive mt-5">
+                <table class="table mx-auto">
+                
+                    <tbody class="align-middle">
+                        <tr>
+                            <td>
+                                <label for="usernameFilter">Filter by username</label>
+                                <input type="text" class="form-control" id="usernameFilter">
+                            </td>
+                            <td>
+                                <label for="cityFilter">Filter by city</label>
+                                <div class="input-group-prepend" id="cityFilter">
+                                    <select class="form-select">
+                                        <option selected value> Select city </option>
+                                        <option value="1">London</option>
+                                        <option value="2">Admin City</option>
+                                        <option value="3">Warwick</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td width="50"></td>
+                            <td>
+                                <label for="ageFromFilter">Age from</label>
+                                <input type="text" class="form-control" id="ageFromFilter">
+                            </td>
+                            <td>
+                                <label for="toText"></label>
+                                <div class="input-group-prepend" id="toText">
+                                    <span> to </span>
+                                </div>
+                            </td>
+                            <td>
+                                <label for="ageToFilter">Age to</label>
+                                <input type="text" class="form-control" id="ageToFilter">
+                            </td>
+
+                            <td>
+                                <label for="ageFilterButton"></label>
+                                <div class="input-group-prepend" id="ageFilterButton">
+                                    <button id="test" type="button" class=" btn btn-info">Filter Age</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                
+                <table class="table mt-4">
+                    <thead>
+                        <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Common Hobbies</th>
+                            <th scope="col">Hobbies</th>
+                            <th scope="col">Add Friend</th>
+                        </tr>
+                    </thead>
+                
+                    <tbody class="align-middle">
+                        <tr v-for="(user, index) in users_not_friends_with">
+                            <td>
+                                <a :href="user.profile">[[ user.username ]]</a>
+                            </td>
+                            <td>
+                                <span>[[ user.first_name + " " + user.surname]] </span>
+                            </td>
+                            <td>
+                                <span>[[ user.age ]]</span>
+                            </td>
+                            <td>
+                                <span>[[ user.city ]]</span>
+                            </td>
+                            <td>
+                                <span>[[ common_hobbies[index] ]]</span>
+                            </td>
+                            <td>
+                                <button type="button" class=" btn btn-info">View Hobbies</button>
+                            </td>
+                            <td>
+                                <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
+                                <button @click="sendFriendRequest(user)" v-else type="button" class=" btn btn-info">Add Friend</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                users_not_friends_with: [],
+                common_hobbies: [],
+                users_sent_request_to: [],
+            }
+        },
+
+        async created() {
+            let response = await fetch("{% url 'users api' %}");
+            if (response.ok) {
+                let data = await response.json();
+                this.users_not_friends_with = data.users_not_friends_with
+                this.common_hobbies = data.common_hobbies
+                this.users_sent_request_to = data.users_sent_request_to
+            }
+
+            else {
+                alert("Failed to load list of users");
+            }
+
+            //console.log(this.users_sent_request_to)
+        },
+
+        methods: {
+            async sendFriendRequest(userToRequest) {
+                username = userToRequest.username
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    this.users_sent_request_to.push(username)
+                }
+                else {
+                    alert("Failed to send request to " + username);
+                }
+            },
+
+            async cancelFriendRequest(userToRemoveRequest) {
+                username = userToRemoveRequest.username
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRemoveRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    index = this.users_sent_request_to.indexOf(username);
+                    this.users_sent_request_to.splice(index, 1);
+
+                }
+                else {
+                    alert("Failed to cancel friend request to " + username);
+                }
+            },
+
+
+        }
+    
+    
+    })
+
+    myApp.mount('#app')
+</script>
+{% endblock %}

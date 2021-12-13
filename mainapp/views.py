@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.contrib import auth
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from mainapp.models import *
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.http.response import HttpResponseNotFound
 
 # Create your views here.
 
@@ -70,6 +71,38 @@ def home_view(request):
     return render(request, 'mainapp/profile/homepage.html')
 
 @login_required
+def social_view(request):
+    return render(request, 'mainapp/profile/social.html')
+
+@login_required
 def logout(request):
     auth.logout(request)
     return redirect('/')
+
+@login_required
+def user_profile_view(request, username):
+    try:
+        user = User.objects.get(username=username)
+        json_obj = user.to_dict()
+        requestSent = False
+        friendsWith = False
+        try:
+            requestSent = FriendRequest.objects.get(from_user=request.user, to_user=user)
+            requestSent = True
+        except:
+            pass
+        try:
+            friendsWith = request.user.friends.all().get(username=username)
+            friendsWith = True
+        except:
+            pass
+
+        return render(request, 'mainapp/profile/profile.html', {
+            'profile': json_obj,
+            'requestSent': requestSent,
+            'friendsWith': friendsWith,
+        })
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User not found")
+
+

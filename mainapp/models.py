@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import NullBooleanField
 from django.urls import reverse
+import datetime
 
 # Create your models here.
 
 class User(AbstractUser):
-    profile_pic = models.ImageField(blank=True, null=True)
+    profile_pic = models.ImageField(default="default.png" ,blank=True, null=True)
     city = models.CharField(blank=True, max_length=150, null=True)
     date_of_birth = models.DateField(null=True)
     hobbies = models.ManyToManyField(
@@ -19,20 +20,32 @@ class User(AbstractUser):
         blank=True,
         related_name='friends'
     )
-    requested_friends = models.ManyToManyField(
-        to='self',
-        blank=True,
-        related_name="requests"
-    )
 
     def to_dict(self):
+        today = datetime.date.today()
+        dob = self.date_of_birth
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        
+        
         return {
             'username': self.username,
+            'profile_pic': self.get_profile_picture(),
             'first_name': self.first_name,
             'surname': self.last_name,
             'dob': self.date_of_birth,
-            'city': self.city
+            'age': age,
+            'city': self.city,
+            'email': self.email,
+            'profile': reverse('userProfile', kwargs={'username': self.username}),
+            'hobbies': self.get_hobbies(),
         }
+
+    def get_profile_picture(self):
+        if self.profile_pic:
+            return self.profile_pic.url
+        else:
+            return "/assets/images/default.png"
+
 
     def __str__(self):
         return self.username
@@ -42,6 +55,11 @@ class User(AbstractUser):
             hobby.to_dict()
             for hobby in self.hobbies.all()
         ]
+
+class FriendRequest(models.Model): 
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="from_user")
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="to_user")
+
 
 
 class Hobby(models.Model):

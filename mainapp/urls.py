@@ -16,6 +16,8 @@ Including another URLconf
 from django.urls import path
 from . import views, api
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     # Root URL
@@ -27,6 +29,8 @@ urlpatterns = [
     path('logout/', views.logout, name="logout"),
     path('createHobbies/', views.create_hobbies_view, name="createHobbies"),
     path('searchHobbies/', views.search_hobbies_view, name="searchHobbies"),
+    path('social/', views.social_view, name="social"),
+    path('profile/<str:username>', views.user_profile_view, name="userProfile"),
 
     path('api/hobbies/', api.hobbies_api, name="hobbies api"),
     path('api/toggleHobby/', api.toggle_hobby, name="toggle hobby api"),
@@ -34,6 +38,14 @@ urlpatterns = [
     path('api/createHobby/', api.hobbie_api, name="hobbie api"), # createHobby api
     path('api/profile/', api.profile_api, name="profile api"),
     path('api/hobby/<str:hobby_name>/', api.hobby_api, name="hobby api"),
+    path('api/deleteUserHobby/', api.user_delete_hobby, name="delete hobby api"),
+    path('api/uploadFile/', api.uploadFiles, name="uploadFile api"),
+    path('api/users/', api.users_api, name="users api"),
+    path('api/friendRequest/', api.friend_request_api, name="friend request api"),
+    path('api/friend/', api.friend_api, name="friend api"),
+
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

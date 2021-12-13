@@ -1,0 +1,157 @@
+{% extends 'mainapp/profile/base.html' %}
+
+{% block content %}
+
+{% load static %}
+<div id="app">
+    {% csrf_token %}
+    <div class="container d-flex flex-nowrap">
+        <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
+            <img src="{{ profile.profile_pic }}" class="img-fluid mb-3" style="max-width: 100%; height: 50%;" >
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>Full Name: </strong>
+                    <p style="display: inline">{{ profile.first_name }} {{ profile.surname }}</p>
+                </li>
+                <li class="list-group-item">
+                    <strong>Date of Birth: </strong>
+                    <p style="display: inline">{{ profile.dob }}</p>
+                </li>
+                <li class="list-group-item">
+                    <strong>Email: </strong>
+                    <p style="display: inline">{{ profile.email }}</p>
+                </li>
+                <li class="list-group-item">
+                    <strong>City: </strong>
+                    <p style="display: inline">
+                        {% if profile.city == None or profile.city|length == 0 %}
+                        Not Specified
+                        {% else %}
+                        {{ profile.city }}
+                        {% endif %}
+                    </p>
+                </li>
+              </ul>
+              {% if profile.username != user.username %}
+              <button @click="cancelFriendRequest()" v-if="(requestSent == true && friendsWith == false)" type="button" class="btn btn-danger mt-3">Request Sent</button>
+              <button @click="sendFriendRequest()" v-if="(requestSent == false && friendsWith == false)" type="button" class="btn btn-success mt-3">Send Friend Request</button>
+              <button @click="removeFriend()" v-if="friendsWith == true" type="button" class="btn btn-danger mt-3">Remove Friend</button>
+              {% endif %}
+        </div>
+        <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: auto">
+            <h4 class="text-center">{{ profile.username }}'s Hobbies</h2>
+            <table class="table">
+                <tbody>
+                    {% for hobby in profile.hobbies %}
+                    <tr>
+                        <td class="align-middle text-center">
+                            <a href="{{ hobby.api }}">
+                                {{ hobby.name }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}                  
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                requestSent: false,
+                friendsWith: false,
+            }
+        },
+
+        async created() {
+
+            if ("{{requestSent}}" == "True") { this.requestSent = true}
+            if ("{{friendsWith}}" == "True") { this.friendsWith = true}
+
+            console.log(this.requestSent)
+            console.log(this.friendsWith)
+        },
+
+        methods: {
+            
+            async sendFriendRequest() {
+                username = "{{profile.username}}"
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    this.requestSent = true
+                }
+                else {
+                    alert("Failed to send request to " + username);
+                }
+            },
+
+            async cancelFriendRequest() {
+                username = "{{profile.username}}"
+                
+                let response = await fetch("{% url 'friend request api' %}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        userToRemoveRequest: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    this.requestSent = false
+
+                }
+                else {
+                    alert("Failed to cancel friend request to " + username);
+                }
+            },
+            
+            async removeFriend() {
+                username = "{{profile.username}}"
+                
+                let response = await fetch("{% url 'friend api' %}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken").value,
+                    },
+                    body: JSON.stringify({
+                        friendToRemove: username,
+                    }),
+
+                });
+                if (response.ok) {
+                    this.friendsWith = false
+                }
+                else {
+                    alert("Failed to remove friend: " + username);
+                }
+            },
+
+        }
+    
+    
+    })
+
+    myApp.mount('#app')
+</script>
+{% endblock %}
