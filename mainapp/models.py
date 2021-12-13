@@ -56,6 +56,13 @@ class User(AbstractUser):
             for hobby in self.hobbies.all()
         ]
 
+    def getFriendRequests(self):
+        return [
+            request
+            for request in FriendRequest.objects.filter(to_user=self.username)
+        ]
+
+
 class FriendRequest(models.Model): 
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="from_user")
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="to_user")

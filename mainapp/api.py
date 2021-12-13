@@ -162,6 +162,14 @@ def users_api(request):
 def friend_request_api(request):
     logged_in_user = request.user
 
+    if request.method == "GET":
+        requests = FriendRequest.objects.filter(to_user=logged_in_user)
+        print(requests)
+        arr = [request.from_user.to_dict() for request in requests]
+        return JsonResponse({
+            'data': arr
+        })
+
     if request.method == "POST":
         try:
             POST = json.loads(request.body)
@@ -203,4 +211,29 @@ def friend_api(request):
 
     return HttpResponseBadRequest("Invalid method")
 
+@login_required
+def acceptFriendRequest(request):
+    logged_in_user = request.user
+    user_object = get_object_or_404(User,username=logged_in_user.username)
+    if request.method == "PUT":
+        try:
+            PUT = json.loads(request.body)
+            friendToAdd = PUT["friendToAdd"]
+            friend = User.objects.get(username=friendToAdd)
+            FriendRequest.objects.filter(from_user=friend, to_user=request.user).delete()
+            user_object.friends.add(friend)
+            return JsonResponse({})
+        except:
+            return HttpResponseNotFound("Invalid data")
+
+@login_required
+def rejectFriendRequest(request):
+    if request.method == "DELETE":
+        DELETE = json.loads(request.body)
+        friendToDelete = DELETE["friendToDelete"]
+        result = User.objects.get(username=friendToDelete)
+        FriendRequest.objects.filter(from_user=result, to_user=request.user).delete()
+        return JsonResponse({})
+
+    return HttpResponseBadRequest("Bad Request")
 

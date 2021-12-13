@@ -45,6 +45,8 @@ urlpatterns = [
     path('api/users/', api.users_api, name="users api"),
     path('api/friendRequest/', api.friend_request_api, name="friend request api"),
     path('api/friend/', api.friend_api, name="friend api"),
+    path("api/acceptFriendRequest/", api.acceptFriendRequest, name="accept friend request"),
+    path("api/rejectFriendRequest/", api.rejectFriendRequest, name="reject friend request")
 
 
 ]
