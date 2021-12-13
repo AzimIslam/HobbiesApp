@@ -90,7 +90,7 @@
                             </td>
                             <td>
                                 <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Cancel Request</button>
-                                <button @click="sendFriendRequest(user)" v-else type="button" class=" btn btn-info">Add Friend</button>
+                                <button @click="sendFriendRequest(user)" v-else type="button" class=" btn btn-success">Add Friend</button>
                             </td>
                         </tr>
                     </tbody>
