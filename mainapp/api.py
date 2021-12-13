@@ -64,16 +64,7 @@ def hobby_api(request, hobby_name):
     except Hobby.DoesNotExist:
         return HttpResponse(f"Invalid Hobby: {hobby_name}")
 
-@login_required
-def user_profile_api(request, username):
-    try:
-        user = User.objects.get(username=username)
-        json_obj = user.to_dict()
-        return render(request, 'mainapp/profile/profile.html', {
-            'profile': json_obj
-        })
-    except User.DoesNotExist:
-        return HttpResponseNotFound("User not found")
+
 
 @login_required
 def hobbies_api(request):
@@ -190,6 +181,22 @@ def friend_request_api(request):
             to_user = POST["userToRemoveRequest"]
             friend_request = FriendRequest.objects.get(from_user=logged_in_user, to_user=User.objects.get(username=to_user))
             friend_request.delete()
+            return JsonResponse({})
+        except:
+            return HttpResponseNotFound("Invalid data")
+
+    return HttpResponseBadRequest("Invalid method")
+
+
+@login_required
+def friend_api(request):
+    logged_in_user = request.user
+
+    if request.method == "DELETE":
+        try:
+            POST = json.loads(request.body)
+            friendToRemove = POST["friendToRemove"]
+            logged_in_user.friends.remove(User.objects.get(username=friendToRemove))
             return JsonResponse({})
         except:
             return HttpResponseNotFound("Invalid data")
