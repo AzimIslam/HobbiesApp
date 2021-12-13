@@ -49,7 +49,8 @@
         </div>
         <div class="card shadow p-3 m-3" style="width: 40rem; height: 40rem; background-color: rgba(242, 240, 240, 0.8); overflow: auto">
             <h4 class="text-center">My Hobbies</h2>
-            <table class="table">
+            <p v-if="hobbies.length == 0"class="text-center mt-2">You currently do not have any hobbies</p>
+            <table v-if="hobbies.length >= 0" class="table">
                 <tbody>
                     <tr v-for="(hobby) in hobbies">
                         <td class="align-middle text-center">

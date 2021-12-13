@@ -44,14 +44,19 @@ def hobbie_api(request):
         try:
             body_unicode = request.body.decode('utf8')
             body = json.loads(body_unicode)
+
+            if len(body["hobbieName"]) == 0 or len(body["hobbieDescription"]) == 0:
+                return HttpResponseBadRequest("Please ensure that the fields contain data")
+
             newHobbie = Hobby(
                 name = body["hobbieName"],
                 description = body["hobbieDescription"],
             )
             newHobbie.save()
+
             return JsonResponse({})
         except:
-            return HttpResponseNotFound("New Hobbie Not created")
+            return HttpResponseBadRequest("Hobby already exists")
 
 @login_required
 def hobby_api(request, hobby_name):

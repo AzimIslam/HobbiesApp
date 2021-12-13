@@ -3,16 +3,16 @@
 {% block content %}
   <div id=app>
     {% csrf_token %}
-    <div class="full-screen mx-auto flex-column">
-      <div class="container mt-5">
-        <div class="card" class="card shadow mx-auto" style="width: 50%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
+    <div class="full-screen mx-auto flex-column ">
+      <div class="container mt-5 ">
+        <div class="card shadow mx-auto align-items-center justify-content-center align-content-center" style="width: 75%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
           <h3 class="card-title m-5 text-center">Friend Requests</h3>
           <p v-if="requests.length == 0"class="text-center m-5" >You have no friend requests</p>
-          <div v-if="requests.length > 0" class="table-responsive  p-4">
+          <div v-if="requests.length > 0" class="table" style="width: 75%;">
             <table class="table mx-auto">
               <thead>
                 <th scope="col">Username</th>
-                <th scope="col">Actions</th>
+                <th scope="col" colspan="2">Actions</th>
               </thead>
               <tbody class="align-middle">
                 <tr v-for="(request) in requests">

@@ -3,7 +3,6 @@
 {% block content %}
   <div id=app>
     {% csrf_token %}
-    <h1 class="">Social Hub {{ user }}</h1>
     <div class="full-screen mx-auto flex-column">
       <div class="container">
         <div class="card shadow mx-auto text-left mt-5 m-3 p-4" style="width: 100%; height: 100%; background-color: rgba(242, 240, 240, 0.8)">
@@ -90,7 +89,7 @@
                                 <button type="button" class=" btn btn-info">View Hobbies</button>
                             </td>
                             <td>
-                                <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Request Sent</button>
+                                <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Cancel Request</button>
                                 <button @click="sendFriendRequest(user)" v-else type="button" class=" btn btn-info">Add Friend</button>
                             </td>
                         </tr>
