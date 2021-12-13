@@ -74,6 +74,15 @@ def home_view(request):
 def social_view(request):
     return render(request, 'mainapp/profile/social.html')
 
+
+@login_required
+def friends_view(request):
+    return render(request, 'mainapp/profile/friends.html')
+
+@login_required
+def pending_friend_request_view(request):
+    return render(request, 'mainapp/profile/pendingFriendRequests.html')
+
 @login_required
 def logout(request):
     auth.logout(request)
@@ -104,5 +113,3 @@ def user_profile_view(request, username):
         })
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
-
-
