@@ -5,7 +5,7 @@
     <div class="container">
         <div class="card shadow mx-auto text-left m-3 p-4" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
             <h5 class="card-title pt-2 pb-4">Create an account</h5>
-            <form method="post">
+            <form method="post" onsubmit="isFutureDate()">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
@@ -42,4 +42,14 @@
         </div>
     </div>  
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function isFutureDate(value) {
+    d_now = new Date();
+    d_inp = new Date(value)
+    return d_now.getTime() <= d_inp.getTime();
+}
+</script>
 {% endblock %}
