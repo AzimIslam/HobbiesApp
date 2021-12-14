@@ -2,3 +2,4 @@ selenium
 Django
 django-debug-toolbar
 Pillow
+psycopg2
