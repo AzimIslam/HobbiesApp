@@ -17,7 +17,8 @@ class SeleniumTests(LiveServerTestCase):
             "Adding hobby to hobby list": "FAILED",
             "Removing hobby from hobby list": "FAILED"
         }
-        cls.selenium = webdriver.Firefox()
+        cls.selenium = webdriver.Chrome()
+        # cls.selenium = webdriver.Firefox() --> uncomment for Firefox
         cls.selenium.implicitly_wait(10)
 
     @classmethod
@@ -63,6 +64,9 @@ class SeleniumTests(LiveServerTestCase):
         time.sleep(1)
 
         self.selenium.find_element_by_class_name("btn-danger").click()
+
+        self.selenium.find_element_by_xpath('//button[text()="Save Changes"]').click()
+        time.sleep(1)
 
         rows = self.selenium.find_elements_by_xpath ("//*[@class= 'table']/tbody/tr")
 
