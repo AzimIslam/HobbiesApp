@@ -1,4 +1,5 @@
-from django.test import LiveServerTestCase
+# Commented out for deployment
+""" from django.test import LiveServerTestCase
 from selenium import webdriver
 from .models import User, Hobby
 from django.contrib.auth.hashers import make_password
@@ -189,4 +190,4 @@ class SeleniumTests(LiveServerTestCase):
         time.sleep(1)
         self.assertEquals(self.selenium.find_element_by_class_name("navbar-brand").text, "Hobbies App")
 
-        self.report["Creates a user account for the hobby app"] = "PASSED"
+        self.report["Creates a user account for the hobby app"] = "PASSED" """
