@@ -21,5 +21,6 @@
 
 ## URL For Deployed Application
 
-Here is the URL for our hobbies web application:
-[Click Here](http://example.com): **http://example.com**
+Here is the URL for our hobbies web application: 
+[Click Here](http://example.com)
+**http://example.com**
