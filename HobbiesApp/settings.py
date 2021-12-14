@@ -21,7 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-54p&3qo8779(#-h(ft5z!4a!@z_^0fz2*5e0j97s51ei#ypqv('
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    # safe value used for development when DJANGO_SECRET_KEY might not be set
+    '9e4@&tw46$l31)zrqe3wi+-slqm(ruvz&se0^%9#6(_w3ui!c0'
+)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'mainapp',
 ]
 
@@ -49,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'HobbiesApp.urls'
@@ -75,25 +83,11 @@ WSGI_APPLICATION = 'HobbiesApp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# LOCAL
-""" DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-} """
 
-# Openshift
+from . import database
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': str(os.environ.get('DATABASE_NAME')),
-        'USER': str(os.environ.get('DATABASE_USER')),
-        'PASSWORD': str(os.environ.get('DATABASE_PASSWORD')),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': database.config()
 }
 
 
@@ -148,4 +142,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'assets/images')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-LOGIN_REDIRECT_URL = "/test"
+INTERNAL_IPS = ['127.0.0.1']
