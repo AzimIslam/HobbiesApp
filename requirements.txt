@@ -1,3 +1,4 @@
+selenium
 Pillow
 Django>=3.2
 django-debug-toolbar==2.2
