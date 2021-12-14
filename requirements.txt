@@ -1,7 +1,7 @@
 selenium
 Pillow
-Django>=3.2
-django-debug-toolbar==2.2
+Django
+django-debug-toolbar
 gunicorn==20.0.4
 psycopg2-binary==2.8.5
 pytz==2020.1
