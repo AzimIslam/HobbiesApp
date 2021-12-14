@@ -45,7 +45,9 @@
             <h4 class="text-center">{{ profile.username }}'s Hobbies</h2>
             <table class="table">
                 <tbody>
-                    {% if profile.hobbies.length > 0 %}
+                    {% if profile.hobbies|length == 0 %}
+                    <p class="text-center mt-2">The user currently does not have any hobbies</p>  
+                    {% else %}
                     {% for hobby in profile.hobbies %}
                     <tr>
                         <td class="align-middle text-center">
@@ -55,9 +57,7 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    {% else %}
-                    <p class="text-center mt-2">The user currently does not have any hobbies</p>  
-                    {% endif %}                
+                    {% endif %}                 
                 </tbody>
             </table>
         </div>
