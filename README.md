@@ -31,21 +31,16 @@ To go to the hobbies page [Click Here](http://example.com) or use this link **ht
 ## Username and Password for Test Users
 
 * **User1 - Rikhil Shah**
-  * **Username:** ec19148
-  * **Password:** RShah
+  * **Username:** ec19148 **Password:** RShah
   
 * **User2 - Azim Islam**
-  * **Username:** ec19205
-  * **Password:** AIslam
+  * **Username:** ec19205 **Password:** AIslam
   
 * **User3 - Haroon Aftab**
-  * **Username:** ec19280
-  * **Password:** HAftab
+  * **Username:** ec19280 **Password:** HAftab
  
 * **User4 - Sahir Ahmed**
-  * **Username:** ec19162
-  * **Password:** SAhmed
+  * **Username:** ec19162 **Password:** SAhmed
   
 * **User5 - Paulo Oliva**
-  * **Username:** eew252
-  * **Password:** POliva
+  * **Username:** eew252 **Password:** POliva
