@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv(
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://*.group03-group03.apps.kube.eecs.qmul.ac.uk', "https://*.127.0.0.1"]
 
 
 # Application definition
