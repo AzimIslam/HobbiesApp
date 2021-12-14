@@ -32,8 +32,8 @@ To go to the hobbies page [Click Here](http://example.com) or use this link **ht
 
 Below is a list of username and passwords for 5 test users:
 
-* **Username:** ec19148 **Password:** RShah
-* **Username:** ec19205 **Password:** AIslam
-* **Username:** ec19280 **Password:** HAftab
-* **Username:** ec19162 **Password:** SAhmed
-* **Username:** eew252 **Password:** POliva
+* **Username:** ec19148 &nbsp;&nbsp;&nbsp; **Password:** RShah
+* **Username:** ec19205 &nbsp;&nbsp;&nbsp; **Password:** AIslam
+* **Username:** ec19280 &nbsp;&nbsp;&nbsp; **Password:** HAftab
+* **Username:** ec19162 &nbsp;&nbsp;&nbsp; **Password:** SAhmed
+* **Username:** eew252  &nbsp;&nbsp;&nbsp; **Password:** POliva
