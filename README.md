@@ -38,7 +38,7 @@ To go to the hobbies page [Click Here](http://example.com) or use this link **ht
   * **Username:** ec19205
   * **Password:** AIslam
   
- * **User3 - Haroon Aftab**
+* **User3 - Haroon Aftab**
   * **Username:** ec19280
   * **Password:** HAftab
  
