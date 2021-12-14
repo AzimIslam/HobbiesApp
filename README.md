@@ -36,4 +36,4 @@ Below is a list of username and passwords for 5 test users:
 * **Username:** ec19205 &nbsp;&nbsp;&nbsp; **Password:** AIslam
 * **Username:** ec19280 &nbsp;&nbsp;&nbsp; **Password:** HAftab
 * **Username:** ec19162 &nbsp;&nbsp;&nbsp; **Password:** SAhmed
-* **Username:** eew252  &nbsp;&nbsp;&nbsp; **Password:** POliva
+* **Username:** eew252  &nbsp;&nbsp;&nbsp;&nbsp; **Password:** POliva
