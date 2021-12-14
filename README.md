@@ -25,8 +25,8 @@ To go to the hobbies page [Click Here](http://example.com) or use this link **ht
 
 ## Username and Password for Admin
 
-**Admin Username:** Admin <br />
-**Admin Password:** Password
+**Admin Username:** admin <br />
+**Admin Password:** riazhasa1234
 
 ## Username and Password for Test Users
 
