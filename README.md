@@ -22,5 +22,4 @@
 ## URL For Deployed Application
 
 Here is the URL for our hobbies web application: <br />
-[Click Here](http://example.com) <br />
-**http://example.com**
+[Click Here](http://example.com) or use this line **http://example.com**
