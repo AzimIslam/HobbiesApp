@@ -22,3 +22,8 @@
 ## URL For Deployed Application
 
 To go to the hobbies page [Click Here](http://example.com) or use this link **http://example.com**
+
+## Username and Password for Admin
+
+**Admin Username:** Admin 
+**Admin Password:** Password
