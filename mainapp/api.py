@@ -153,6 +153,17 @@ def users_api(request):
                     users_not_friends_with.append(user)
                     num_common_hobbies_users.append(num_common_hobbies)
 
+        #sorting arrays to have in order of most common hobbies
+        #copied code from https://www.tutorialspoint.com/python_data_structure/python_sorting_algorithms.htm
+        for iter_num in range(len(num_common_hobbies_users)-1,0,-1):
+          for idx in range(iter_num):
+             if int(num_common_hobbies_users[idx])<int(num_common_hobbies_users[idx+1]):
+                temp1 = num_common_hobbies_users[idx]
+                num_common_hobbies_users[idx] = num_common_hobbies_users[idx+1]
+                num_common_hobbies_users[idx+1] = temp1
+                temp2 = users_not_friends_with[idx]
+                users_not_friends_with[idx] = users_not_friends_with[idx+1]
+                users_not_friends_with[idx+1] = temp2
 
         users_sent_requests_to = FriendRequest.objects.filter(from_user=request.user)
 
@@ -242,6 +253,18 @@ def friend_api(request):
                     users_friends_with.append(user)
                     num_common_hobbies_users.append(num_common_hobbies)
 
+        #sorting arrays to have in order of most common hobbies
+        #copied code from https://www.tutorialspoint.com/python_data_structure/python_sorting_algorithms.htm
+        for iter_num in range(len(num_common_hobbies_users)-1,0,-1):
+            for idx in range(iter_num):
+                if int(num_common_hobbies_users[idx])<int(num_common_hobbies_users[idx+1]):
+                    temp1 = num_common_hobbies_users[idx]
+                    num_common_hobbies_users[idx] = num_common_hobbies_users[idx+1]
+                    num_common_hobbies_users[idx+1] = temp1
+                    temp2 = users_friends_with[idx]
+                    users_friends_with[idx] = users_friends_with[idx+1]
+                    users_friends_with[idx+1] = temp2
+
         return JsonResponse({
             'users_friends_with': [user.to_dict() for user in users_friends_with],
             'common_hobbies': [number for number in num_common_hobbies_users],
@@ -284,4 +307,3 @@ def rejectFriendRequest(request):
         return JsonResponse({})
 
     return HttpResponseBadRequest("Bad Request")
-
