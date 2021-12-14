@@ -25,5 +25,23 @@ To go to the hobbies page [Click Here](http://example.com) or use this link **ht
 
 ## Username and Password for Admin
 
-**Admin Username:** Admin 
+**Admin Username:** Admin <br />
 **Admin Password:** Password
+
+## Username and Password for General Users
+
+* **User1 - Rikhil Shah**
+  * **Username:** 
+  * **Password:** 
+* **User1 - Rikhil Shah**
+  * **Username:** 
+  * **Password:** 
+ * **User1 - Rikhil Shah**
+  * **Username:** 
+  * **Password:**
+* **User1 - Rikhil Shah**
+  * **Username:** 
+  * **Password:** 
+* **User1 - Rikhil Shah**
+  * **Username:** 
+  * **Password:** 
