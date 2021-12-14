@@ -15,23 +15,23 @@
                         <tr>
                             <td>
                                 <label for="usernameFilter">Filter by username</label>
-                                <input type="text" class="form-control" id="usernameFilter">
+                                <input type="text" class="form-control" id="usernameFilter" onkeyup="search_for_user()" placeholder="Search For A User...">
                             </td>
                             <td>
                                 <label for="cityFilter">Filter by city</label>
                                 <div class="input-group-prepend" id="cityFilter">
-                                    <select class="form-select">
+                                    <select class="form-select" id="cityFilterSelect">
                                         <option selected value> Select city </option>
-                                        <option value="1">London</option>
-                                        <option value="2">Admin City</option>
-                                        <option value="3">Warwick</option>
+                                        <template v-for="(city) in user_cities">
+                                          <option :value=city>[[ city ]]</option>
+                                        </template>
                                     </select>
                                 </div>
                             </td>
                             <td width="50"></td>
                             <td>
                                 <label for="ageFromFilter">Age from</label>
-                                <input type="text" class="form-control" id="ageFromFilter">
+                                <input type="number" min=0 class="form-control" id="ageFromFilter" placeholder="insert age from...">
                             </td>
                             <td>
                                 <label for="toText"></label>
@@ -41,21 +41,32 @@
                             </td>
                             <td>
                                 <label for="ageToFilter">Age to</label>
-                                <input type="text" class="form-control" id="ageToFilter">
+                                <input type="number" min=0 class="form-control" id="ageToFilter" placeholder="insert age to...">
                             </td>
 
                             <td>
-                                <label for="ageFilterButton"></label>
-                                <div class="input-group-prepend" id="ageFilterButton">
-                                    <button id="test" type="button" class=" btn btn-info">Filter Age</button>
+                              <div v-if="filtered==false">
+                                <label for="FilterButton"></label>
+                                <div class="input-group-prepend" id="FilterButton">
+                                    <button id="filter" @click=filter() type="button" class="btn btn-info" style="color: white">Filter</button>
+
                                 </div>
+                              </div>
+
+                              <div v-if="filtered==true">
+                                <label for="ResetButton"></label>
+                                <div class="input-group-prepend" id="resetButton">
+                                    <button id="reset" @click=reset() type="button" class=" btn btn-danger btn-info">Reset</button>
+                                </div>
+                              </div>
                             </td>
+
                         </tr>
                     </tbody>
                 </table>
 
 
-                <table class="table mt-4">
+                <table id="myTable" class="table mt-4">
                     <thead>
                         <tr>
                             <th scope="col">Username</th>
@@ -63,7 +74,6 @@
                             <th scope="col">Age</th>
                             <th scope="col">City</th>
                             <th scope="col">Common Hobbies</th>
-                            <th scope="col">Hobbies</th>
                             <th scope="col">Add Friend</th>
                         </tr>
                     </thead>
@@ -80,13 +90,11 @@
                                 <span>[[ user.age ]]</span>
                             </td>
                             <td>
-                                <span>[[ user.city ]]</span>
+                                <span v-if="user.city == null">Not Specified</span>
+                                <span v-if="user.city != null">[[ user.city ]]</span>
                             </td>
                             <td>
                                 <span>[[ common_hobbies[index] ]]</span>
-                            </td>
-                            <td>
-                                <button type="button" class=" btn btn-info">View Hobbies</button>
                             </td>
                             <td>
                                 <button @click="cancelFriendRequest(user)" v-if="users_sent_request_to.includes(user.username)" type="button" class=" btn btn-danger">Cancel Request</button>
@@ -106,6 +114,28 @@
 
 {% block scripts %}
 <script>
+    // Got code from https://www.w3schools.com/howto/howto_js_filter_table.asp
+    function search_for_user() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("usernameFilter");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
     let myApp = Vue.createApp({
         delimiters: ["[[", "]]"],
         data() {
@@ -113,6 +143,8 @@
                 users_not_friends_with: [],
                 common_hobbies: [],
                 users_sent_request_to: [],
+                user_cities: [],
+                filtered: false,
             }
         },
 
@@ -121,7 +153,6 @@
             if (response1.ok) {
                 let data = await response1.json();
                 this.users_not_friends_with = data.users_not_friends_with
-                console.log(this.users_not_friends_with)
                 this.common_hobbies = data.common_hobbies
                 this.users_sent_request_to = data.users_sent_request_to
             }
@@ -130,18 +161,59 @@
                 alert("Failed to load list of users");
             }
 
-            console.log(this.users_not_friends_with)
-
             let response2 = await fetch("{% url 'friend request api' %}")
             if (response2.ok) {
                 let data2 = await response2.json()
                 for(let i=0; i < data2["data"].length; i++) {
                     this.users_not_friends_with = this.users_not_friends_with.filter(u => u.username != data2["data"][i].username)
                 }
+                for(let i=0; i < this.users_not_friends_with.length; i++) {
+                  if (this.users_not_friends_with[i].city != null) {
+                    this.user_cities.push(this.users_not_friends_with[i].city)
+                  }
+                }
+                this.user_cities = [...new Set(this.user_cities)]
             }
+
         },
 
         methods: {
+            async filter() {
+              if (!document.getElementById("cityFilterSelect").value == "") {
+                this.users_not_friends_with=this.users_not_friends_with.filter((element,index) => {
+                  if (element.city != document.getElementById("cityFilterSelect").value) {
+                    this.common_hobbies.splice(index,1)
+                  } else {
+                    return element
+                  }
+                })
+                this.filtered = true
+              }
+              if (document.getElementById("ageFromFilter").value == "" | document.getElementById("ageToFilter").value == "") {
+                if (document.getElementById("ageFromFilter").value == "" & document.getElementById("ageToFilter").value == "") {
+                  return
+                } else {
+                  alert("Insert Both Values for age filters")
+                  return
+                }
+              }
+              if (parseInt(document.getElementById("ageFromFilter").value) > parseInt(document.getElementById("ageToFilter").value)) {
+                alert("Age from must be smaller than Age to")
+              } else {
+                this.users_not_friends_with=this.users_not_friends_with.filter((element,index) => {
+                  if (element.age <= document.getElementById("ageToFilter").value & element.age >= document.getElementById("ageFromFilter").value) {
+                    return element
+                  } else {
+                    this.common_hobbies.splice(index,1)
+                  }
+                })
+                this.filtered = true
+              }
+            },
+            async reset() {
+              location.reload()
+              return false
+            },
             async sendFriendRequest(userToRequest) {
                 username = userToRequest.username
 
