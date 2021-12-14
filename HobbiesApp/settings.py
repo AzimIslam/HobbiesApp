@@ -88,9 +88,9 @@ WSGI_APPLICATION = 'HobbiesApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'NAME': str(os.environ.get('DATABASE_NAME')),
+        'USER': str(os.environ.get('DATABASE_USER')),
+        'PASSWORD': str(os.environ.get('DATABASE_PASSWORD')),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
