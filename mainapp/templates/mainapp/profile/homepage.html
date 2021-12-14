@@ -5,7 +5,7 @@
 {% load static %}
 <div id="app">
     {% csrf_token %}
-    <div class="container d-flex flex-nowrap">
+    <div class="container d-flex flex-nowrap justify-content-center align-content-center">
         <div class="card shadow p-3 m-3" style="width: 20rem; background-color: rgba(242, 240, 240, 0.8)">
             <img v-if="editMode==false" :src="imageSrc" class="img-fluid mb-3" style="max-width: 100%; height: 50%;" >
             <ul class="list-group">
