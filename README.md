@@ -21,7 +21,7 @@
 
 ## URL For Deployed Application
 
-To go to the hobbies page [Click Here](http://example.com) or use this link **http://example.com**
+To go to the hobbies page [Click Here](https://group03-group03.apps.kube.eecs.qmul.ac.uk/) or use this link **https://group03-group03.apps.kube.eecs.qmul.ac.uk/**
 
 ## Username and Password for Admin
 
