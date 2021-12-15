@@ -1,2 +1,4 @@
 selenium
-Django
+django
+django-debug-toolbar
+Pillow
