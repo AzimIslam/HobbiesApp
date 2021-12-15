@@ -37,3 +37,6 @@ Below is a list of username and passwords for 5 test users:
 * **Username:** ec19280 &nbsp;&nbsp;&nbsp; **Password:** HAftab
 * **Username:** ec19162 &nbsp;&nbsp;&nbsp; **Password:** SAhmed
 * **Username:** eew252  &nbsp;&nbsp;&nbsp;&nbsp; **Password:** POliva
+
+## Testing Application
+Uncomment line 21 to test on Firefox in mainapp/tests.py
